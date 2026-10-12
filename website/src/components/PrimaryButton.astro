@@ -1,0 +1,100 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'md' | 'lg';
+  icon?: string;
+  type?: 'button' | 'submit';
+  class?: string;
+  [key: string]: unknown;
+}
+const { href, variant = 'primary', size = 'md', icon, type = 'button', class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+  {...rest}
+>
+  <span><slot /></span>
+  {icon && <Icon name={icon} size={18} />}
+</Tag>
+
+<style>
+  .btn {
+    --btn-h: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55em;
+    min-height: var(--btn-h);
+    padding: 0 1.15em;
+    border-radius: var(--r-sm);
+    border: 1px solid transparent;
+    font-weight: 560;
+    font-size: var(--fs-sm);
+    letter-spacing: -0.005em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+  .btn--lg {
+    --btn-h: 52px;
+    padding: 0 1.4em;
+    font-size: 1rem;
+  }
+  .btn :global(svg) {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .btn:hover :global(svg) {
+    transform: translateX(2px);
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn--primary {
+    background: var(--accent);
+    color: var(--accent-on);
+  }
+  .btn--primary:hover {
+    background: var(--accent-hover);
+  }
+  .btn--primary:active {
+    background: var(--accent-pressed);
+  }
+  .btn--secondary {
+    background: var(--surface-control);
+    border-color: var(--line-strong);
+    color: var(--text);
+  }
+  .btn--secondary:hover {
+    border-color: rgb(255 255 255 / 0.28);
+    background: var(--surface-raised);
+  }
+  .btn--ghost {
+    color: var(--text);
+    padding-inline: 0.4em;
+  }
+  .btn--ghost:hover {
+    color: var(--accent-text);
+  }
+  .btn:disabled,
+  .btn[disabled],
+  .btn[aria-disabled='true'] {
+    background: var(--surface-control);
+    color: var(--text-muted);
+    border-color: var(--line);
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+</style>

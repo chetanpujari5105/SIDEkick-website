@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import BetaAccess from '../components/BetaAccess.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../config/site';
+const expect = [
+  { icon: 'mail', title: 'An invitation', text: 'If there’s a place, you’ll get both apps, a one-page setup guide, checksums so you can confirm the files, and your personal access token.' },
+  { icon: 'circle-alert', title: 'Warnings on install', text: 'The Mac app isn’t notarized by Apple and the Android app isn’t on Google Play yet, so both systems warn you. The guide covers each step.' },
+  { icon: 'clock', title: `${site.betaAccessDuration?.days ?? ''} days of access`, text: 'Counted from the start date in your token, normally the day it’s issued. You’ll get a notice a week before and a day before it ends. Renewals are issued by hand.' },
+  { icon: 'message-square', title: 'Short, specific reports', text: 'One message per problem: what you did, what you expected, the exact words on screen, the time, and your devices.' },
+];
+---
+<BaseLayout title="Beta access" description="Request a place in Sidekick’s invited beta for Android and Mac: what the beta involves, the 45-day access token, and what feedback helps." path="/beta">
+  <PageHeader eyebrow="Beta" title="Help shape Sidekick before it’s public." lede="The beta is deliberately small: a handful of people using a release candidate on their own Mac and Android phone, and telling us exactly what they see." />
+  <section class="section expect" aria-labelledby="expect-title">
+    <div class="container">
+      <h2 id="expect-title" class="expect__title">What to expect</h2>
+      <ol class="expect__list">
+        {expect.map((e) => (
+          <li>
+            <Icon name={e.icon} size={22} />
+            <h3>{e.title}</h3>
+            <p>{e.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="expect__fine">Access tokens are only ever issued by hand to invited testers. This website never generates or sends one.</p>
+    </div>
+  </section>
+  <BetaAccess />
+</BaseLayout>
+
+<style>
+  .expect__title {
+    font-size: var(--fs-h3);
+    margin-bottom: var(--s-8);
+  }
+  .expect__list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-8);
+  }
+  .expect__list li {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line-strong);
+  }
+  .expect__list :global(svg) {
+    color: var(--text-muted);
+    margin-bottom: var(--s-2);
+  }
+  .expect__list h3 {
+    font-size: 1.125rem;
+  }
+  .expect__list p {
+    font-size: var(--fs-sm);
+  }
+  .expect__fine {
+    margin-top: var(--s-10);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  @media (min-width: 720px) {
+    .expect__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .expect__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

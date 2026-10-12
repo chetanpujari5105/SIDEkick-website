@@ -1,0 +1,104 @@
+---
+import PrimaryButton from './PrimaryButton.astro';
+import HeroComposition from './illustrations/HeroComposition.astro';
+import { primaryCta, statusLabel, site } from '../config/site';
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      {statusLabel && (
+        <p class="hero__status reveal">
+          <span class="hero__status-dot" aria-hidden="true"></span>
+          {statusLabel} · build {site.currentBuild.version}
+        </p>
+      )}
+      <h1 id="hero-title" class="hero__title reveal reveal-2">
+        Your Android.<br />Right beside your&nbsp;Mac.
+      </h1>
+      <p class="hero__lede reveal reveal-3">
+        Sidekick brings your phone’s screen, notifications, messages and files into your Mac — over a direct,
+        encrypted connection on your own network. Two apps, paired once with a QR code. No account.
+      </p>
+      <div class="hero__actions reveal reveal-3">
+        <PrimaryButton href={primaryCta.href} size="lg" icon="arrow-right">{primaryCta.label}</PrimaryButton>
+        <PrimaryButton href={site.demoVideo ? '#demo' : '#walkthrough'} variant="secondary" size="lg" data-demo-trigger={site.demoVideo ? '' : undefined}>
+          See Sidekick in action
+        </PrimaryButton>
+      </div>
+      <p class="hero__fine">
+        For {site.minimumRequirements.mac.replace(' or later', '+')} and {site.minimumRequirements.android.replace(' or later', '+')}.
+        <a class="text-link" href="#compatibility">What’s tested</a>
+      </p>
+    </div>
+    <div class="hero__visual">
+      <HeroComposition />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(2.5rem, 1rem + 5vw, 6rem) clamp(4rem, 2rem + 6vw, 8rem);
+    position: relative;
+  }
+  .hero__grid {
+    display: grid;
+    gap: clamp(2.5rem, 1rem + 4vw, 4rem);
+    align-items: center;
+  }
+  .hero__copy {
+    display: grid;
+    gap: var(--s-6);
+    max-width: 40rem;
+  }
+  .hero__status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    width: fit-content;
+  }
+  .hero__status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgb(198 255 51 / 0.14);
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.04em;
+    font-weight: 620;
+  }
+  .hero__lede {
+    font-size: var(--fs-lg);
+    line-height: 1.55;
+    max-width: 34rem;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .hero__fine {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  @media (max-width: 479.98px) {
+    .hero__actions :global(.btn) {
+      flex: 1 1 100%;
+    }
+  }
+  @media (min-width: 1040px) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: var(--s-12);
+    }
+    .hero__visual {
+      margin-right: calc(var(--gutter) * -0.5);
+    }
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  tone?: 'warning' | 'info';
+  title: string;
+}
+const { tone = 'info', title } = Astro.props;
+---
+<aside class:list={['notice', `notice--${tone}`]} role="note">
+  <Icon name={tone === 'warning' ? 'circle-alert' : 'info'} size={20} />
+  <div>
+    <p class="notice__title">{title}</p>
+    <div class="notice__body"><slot /></div>
+  </div>
+</aside>
+
+<style>
+  .notice {
+    display: flex;
+    gap: var(--s-3);
+    padding: var(--s-4) var(--s-5);
+    border-radius: var(--r-md);
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    font-size: var(--fs-sm);
+    max-width: 70ch;
+  }
+  .notice :global(svg) {
+    flex: none;
+    margin-top: 0.15em;
+    color: var(--text-muted);
+  }
+  .notice--warning {
+    border-color: rgb(255 181 71 / 0.35);
+    background: var(--warning-tint);
+  }
+  .notice--warning :global(svg) {
+    color: var(--warning);
+  }
+  .notice__title {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .notice__body :global(p) {
+    margin-top: var(--s-1);
+  }
+  .notice__body :global(a) {
+    color: var(--text);
+  }
+</style>

@@ -1,0 +1,86 @@
+---
+import Icon from '../Icon.astro';
+import MacWindow from './MacWindow.astro';
+interface Props { class?: string; progress?: number }
+const { progress = 64 } = Astro.props;
+---
+<MacWindow active="files" title="Files" subtitle="Folders you share from the phone" class={Astro.props.class}>
+  <div class="fp">
+    <div class="fp__folders">
+      <div class="fp__folder is-active"><Icon name="download" /><span class="ui-grow ui-ellipsis">Received files</span></div>
+      <div class="fp__folder"><Icon name="folder" /><span class="ui-grow ui-ellipsis">Documents</span><span class="ui-m">shared</span></div>
+      <div class="fp__folder"><Icon name="folder" /><span class="ui-grow ui-ellipsis">Camera</span><span class="ui-m">shared</span></div>
+      <div class="ui-note fp__hint"><Icon name="info" />Only folders you share appear here.</div>
+    </div>
+    <div class="ui-card ui-card--raised fp__sheet">
+      <div class="ui-h">Send 2 files to your phone</div>
+      <div class="fp__file"><span class="ui-app"><Icon name="file" /></span><div class="ui-grow"><div class="ui-b ui-ellipsis">Itinerary.pdf</div><div class="ui-m">1.2 MB</div></div></div>
+      <div class="fp__file"><span class="ui-app"><Icon name="image" /></span><div class="ui-grow"><div class="ui-b ui-ellipsis">Venue-map.png</div><div class="ui-m">3.4 MB</div></div></div>
+      <div class="ui-divider"></div>
+      <div class="ui-row"><span class="ui-m ui-grow">Arrives in</span><span class="ui-b ui-mono">Download › ConnectSuite</span></div>
+      <div class="fp__progress"><div class="ui-progress" style={`--p:${progress}%`}><i></i></div><span class="ui-m ui-mono">{progress}%</span></div>
+      <div class="ui-note"><Icon name="shield-check" />Your phone checks each file when it arrives.</div>
+    </div>
+  </div>
+</MacWindow>
+
+<style>
+  .fp {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 1.2em;
+  }
+  .fp__folders {
+    display: grid;
+    align-content: start;
+    gap: 0.4em;
+  }
+  .fp__folder {
+    display: flex;
+    gap: 0.8em;
+    align-items: center;
+    padding: 0.8em 0.9em;
+    border-radius: 0.9em;
+    font-size: 1.15em;
+    color: #c4c5cc;
+    min-width: 0;
+  }
+  .fp__folder :global(svg) {
+    width: 1.3em;
+    height: 1.3em;
+    flex: none;
+  }
+  .fp__folder .ui-m {
+    font-size: 0.85em;
+  }
+  .fp__folder.is-active {
+    background: #1c1c1c;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    color: #f2f3f5;
+  }
+  .fp__hint {
+    margin-top: 0.8em;
+    padding-inline: 0.9em;
+  }
+  .fp__sheet {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+  .fp__file {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    min-width: 0;
+  }
+  .fp__progress {
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+  }
+  .fp__progress .ui-progress {
+    flex: 1;
+  }
+</style>

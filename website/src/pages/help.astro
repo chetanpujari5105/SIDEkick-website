@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import DocLayout from '../components/DocLayout.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../config/site';
+
+const sections = [
+  {
+    id: 'connecting',
+    label: 'Connecting',
+    items: [
+      { q: 'The Mac can’t find my phone', a: ['Check both are on the same network. Some office, hotel and public Wi-Fi networks stop devices from seeing each other — joining your Mac to the phone’s hotspot avoids that.', 'On the Mac, make sure Sidekick is allowed under System Settings → Privacy & Security → Local Network.', 'Open Sidekick on the phone once; the link runs from there.'] },
+      { q: 'It disconnects when my phone is idle', a: ['Some phones close background apps aggressively. In the phone’s settings, find Battery or Background usage for Sidekick and allow it to run in the background.'] },
+      { q: '“This Mac still remembers a phone”', a: ['Press Forget, then scan the new code. On the phone, remove the Mac under Paired Macs too. Sidekick holds one phone per Mac.'] },
+      { q: '“Sidekick can’t use this Mac’s saved key”', a: ['Choose Quit and contact the person running the beta. Don’t choose Start Over with a New Key unless asked — it means pairing again.'] },
+    ],
+  },
+  {
+    id: 'mirroring',
+    label: 'Mirroring',
+    items: [
+      { q: 'Android asks for permission every time', a: ['That’s expected. Android requires a fresh tap to allow screen capture for every mirroring session, and no app can remember it.'] },
+      { q: 'Part of the screen is black', a: ['Banking apps, protected video and the lock screen mark themselves as secure, and Android sends black frames for them. Sidekick says so rather than retrying.'] },
+      { q: 'I can see the phone but can’t click on it', a: ['Control uses Sidekick’s accessibility service. Switch it on when Sidekick asks, or under Settings → Accessibility on the phone.'] },
+    ],
+  },
+  {
+    id: 'clipboard',
+    label: 'Clipboard',
+    items: [
+      { q: 'Text copied on the phone doesn’t reach the Mac', a: ['Android only lets Sidekick read the clipboard while Sidekick is open on the phone. Copy with Sidekick open, or share the text to Sidekick.', 'Text shared as a selection waits on the Mac until you press Copy, so nothing replaces your Mac clipboard without you choosing it.'] },
+      { q: 'Where is my clipboard history?', a: ['It’s kept in memory on the Mac — up to 20 items — and cleared when the connection ends. It is never written to disk.'] },
+    ],
+  },
+  {
+    id: 'folders',
+    label: 'Files and folders',
+    items: [
+      { q: 'I can’t see all my phone’s files', a: ['Android gives Sidekick the folders you grant it, not your whole storage. Grant a folder to Sidekick on the phone to browse it from the Mac.', 'The top level of storage and the Download folder itself can’t be granted, so a file sitting directly in Download isn’t reachable. Files you send from the Mac land in Download › ConnectSuite, which Sidekick can always use.'] },
+      { q: 'A shared folder looks empty', a: ['A small number of cases have been seen where Android returned an empty folder list to Sidekick even though files were there. If it happens, note the time and report it; removing and re-granting the folder can hide the cause.'] },
+      { q: 'A large file says “unverified”', a: ['Very large files copied from the phone to the Mac aren’t yet checked block by block in this build. Sidekick labels them so you know. Files sent to the phone are checked on arrival.'] },
+    ],
+  },
+  {
+    id: 'notifications',
+    label: 'Notifications and calls',
+    items: [
+      { q: 'There’s no Reply button on a notification', a: ['Sidekick shows Reply only when the notification itself offers one on the phone. Many messaging apps do; others don’t.'] },
+      { q: 'I answered a call but can’t hear anything on the Mac', a: ['Call audio stays on the phone — Android doesn’t let apps like Sidekick carry it. Answering from the Mac answers on the phone.'] },
+    ],
+  },
+  {
+    id: 'token',
+    label: 'Beta token',
+    items: [
+      { q: 'My token was refused', a: ['The message says why: not copied completely, not issued for this build, ended, or not started yet. Copy the whole token or use Open token file….'] },
+      { q: '“This Mac’s date looks earlier”', a: ['Check System Settings › General › Date & Time. Fixing the date clears it.'] },
+    ],
+  },
+];
+---
+<BaseLayout title="Help" description="Fixes for common Sidekick issues: connecting, mirroring, clipboard, folders, notifications and beta tokens." path="/help">
+  <PageHeader eyebrow="Help" title="Common issues, and what to do." lede="Most problems come from one of three places: the network, a permission, or how Android treats background apps." />
+  <DocLayout toc={[...sections.map((s) => ({ id: s.id, label: s.label })), { id: 'report', label: 'Reporting a problem' }]}>
+    {sections.map((s) => (
+      <>
+        <h2 id={s.id}>{s.label}</h2>
+        <div class="acc">
+          {s.items.map((it) => (
+            <details>
+              <summary><span>{it.q}</span><Icon name="chevron-down" size={18} /></summary>
+              <div>{it.a.map((p) => <p>{p}</p>)}</div>
+            </details>
+          ))}
+        </div>
+      </>
+    ))}
+
+    <h2 id="report">Reporting a problem</h2>
+    <p>One message per problem, with:</p>
+    <ol>
+      <li>What you did, step by step, and what you expected.</li>
+      <li>What the screen said, word for word. A screenshot is fine — crop out anything personal.</li>
+      <li>When it happened (date and time).</li>
+      <li>Your Mac model and macOS version, and your phone model and Android version.</li>
+      <li>Whether it happens again if you repeat it.</li>
+    </ol>
+    {site.supportEmail ? (
+      <p>Send it to <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>.</p>
+    ) : (
+      <p>During the beta, send reports through the contact given in your invitation. A public support address will be listed here once it’s set up.</p>
+    )}
+    <p>If you’re asked for logs: on the Mac they’re in <code>~/Library/Application Support/sidekick-desktop/logs/</code>. They hold connection states, counts and file names, and are written to contain no message text, clipboard text or phone numbers. Look through them before sending if you like.</p>
+  </DocLayout>
+</BaseLayout>

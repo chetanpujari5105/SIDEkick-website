@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import DocLayout from '../components/DocLayout.astro';
+import Notice from '../components/Notice.astro';
+import { site } from '../config/site';
+const isDraft = site.privacyPublicationStatus === 'draft';
+const toc = [
+  { id: 'summary', label: 'In short' },
+  { id: 'apps', label: 'The apps' },
+  { id: 'stored', label: 'What’s stored' },
+  { id: 'delete', label: 'Deleting it' },
+  { id: 'website', label: 'This website' },
+  { id: 'beta-form', label: 'Beta requests' },
+  { id: 'support', label: 'Support messages' },
+  { id: 'licensing', label: 'Licensing and payments' },
+  { id: 'publisher', label: 'Who publishes Sidekick' },
+];
+---
+<BaseLayout title="Privacy" description="How Sidekick handles your data: a direct encrypted connection between your phone and Mac, no account, no analytics — and how this website and beta requests are handled." path="/privacy">
+  <PageHeader eyebrow="Privacy" title="What moves, where it’s kept, and who sees it." lede="Explained by mechanism, not by promise — and separately for the apps, this website, beta requests and anything that comes later." />
+  <DocLayout toc={toc}>
+    {isDraft && (
+      <Notice tone="warning" title="Draft — not yet the effective privacy policy">
+        <p>This page describes how the current beta build works, from its source and release checks. The formal policy still needs the publisher’s legal name, address, contact, effective date and a way of announcing changes. Until those are published here, this is an explanation, not a legal policy.</p>
+      </Notice>
+    )}
+
+    <h2 id="summary">In short</h2>
+    <ul>
+      <li>The phone and Mac apps connect to each other directly on your local network, encrypted with TLS 1.3, with keys exchanged when you pair.</li>
+      <li>There’s no Sidekick account and no Sidekick server in that connection. Neither app includes analytics, advertising or crash reporting.</li>
+      <li>This website, beta requests and any future licensing are separate — each is described below.</li>
+    </ul>
+
+    <h2 id="apps">The apps: what moves between your devices</h2>
+    <p>When you turn a feature on, Sidekick moves that feature’s data between your phone and your Mac only: notifications, text messages, call events, contacts you look up, clipboard text, files and photos you choose, the list of apps you can open, battery and network status, and your phone’s screen while you mirror it.</p>
+    <p>It travels over an encrypted connection (TLS 1.3) whose keys are pinned when you scan the pairing code; after that, each side refuses a device presenting a different key. The phone listens on your local network and the Mac connects to it. There’s no relay, so nothing is reachable from outside that network through Sidekick.</p>
+    <p>The QR scanner reads the code on the phone itself. The beta access token is checked on the Mac and sent nowhere.</p>
+
+    <h2 id="stored">What’s stored, and where</h2>
+    <h3>On your Mac</h3>
+    <ul>
+      <li>Files you copy to it, in <code>~/Downloads/Sidekick</code> or the folder you choose.</li>
+      <li>An Activity history — event types, times, file names, and call events with the contact’s name but never the number — kept to the latest 2,000 events.</li>
+      <li>Diagnostic logs of connection states, counts and file names, with no message, clipboard or file content; about 1 MB at most.</li>
+      <li>Your settings, the pairing record, your beta token and the last time Sidekick saw the Mac’s clock (used only to notice a clock set backwards).</li>
+      <li>This Mac’s private key, sealed in your login Keychain.</li>
+    </ul>
+    <h3>On your phone</h3>
+    <ul>
+      <li>Files sent to it, in <code>Download/ConnectSuite</code> or a folder you’ve shared.</li>
+      <li>The pairing record, a transfer history, and diagnostic logs of the same kind (about 1 MB at most).</li>
+      <li>The phone’s private key, in Android’s hardware-backed Keystore, which can’t be exported.</li>
+    </ul>
+    <h3>Held only in memory</h3>
+    <p>Clipboard history (up to 20 items) is cleared when the connection ends. Notifications, messages, call lists, contacts and photos shown on the Mac are held in memory while connected and not written to disk, unless you save a photo or file.</p>
+    <p>The phone app opts out of Android cloud backup. On the Mac, Time Machine includes Sidekick’s folder unless you exclude it.</p>
+
+    <h2 id="delete">Deleting it</h2>
+    <ul>
+      <li><strong>Phone:</strong> uninstall Sidekick. Received files stay in <code>Download/ConnectSuite</code> until you delete them.</li>
+      <li><strong>Mac:</strong> quit and delete Sidekick, delete <code>~/Library/Application Support/sidekick-desktop</code>, and delete the Keychain item <em>Sidekick Safe Storage</em>. Received files stay in <code>~/Downloads/Sidekick</code>.</li>
+      <li><strong>Forget</strong> on either device removes the pairing.</li>
+    </ul>
+    <p>There’s no server copy to request, because there’s no server.</p>
+
+    <h2 id="website">This website</h2>
+    <p>This site has no analytics, advertising, cookies or third-party embeds, and its fonts and images are served from the site itself. Like any website, the hosting provider receives standard request information — such as IP address, browser and the page requested — and may keep it in access logs. The hosting provider and its log retention will be named here before public launch.</p>
+
+    <h2 id="beta-form">Beta requests</h2>
+    {site.betaFormEndpoint ? (
+      <p>The beta form sends your email, Mac type, phone model and optional comment to <code>{new URL(site.betaFormEndpoint).host}</code>. They’re used only to choose and contact testers, and aren’t shared or sold.</p>
+    ) : (
+      <p>The beta request form is currently switched off, so it collects nothing. When it opens, this section will name where submissions go and how long they’re kept. It will only ask for your email, Mac type, phone model and an optional comment.</p>
+    )}
+
+    <h2 id="support">Support messages</h2>
+    <p>If you report a problem, your message and anything you attach (such as screenshots or logs) are used to fix it. Logs are designed to contain no message text, clipboard text or phone numbers, but please look through anything before you send it.</p>
+
+    <h2 id="licensing">Licensing and payments</h2>
+    <p>The beta uses offline tokens checked on your Mac. How Sidekick will be licensed or sold after the beta hasn’t been decided. If a future version needs any online check or payment provider, it will be described here — including exactly what is sent — before that version is released.</p>
+
+    <h2 id="publisher">Who publishes Sidekick</h2>
+    <p>Publisher name, postal address and contact: <em>not yet published</em>. Effective date: <em>not yet set</em>. These will appear here before this page becomes the formal policy.</p>
+  </DocLayout>
+</BaseLayout>

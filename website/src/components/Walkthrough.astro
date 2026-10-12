@@ -1,0 +1,219 @@
+---
+import Icon from './Icon.astro';
+/*
+ * Product proof without a recording: a four-frame storyboard of verified workflows, drawn with
+ * fictional data and labelled as such. Replace with a sanitized recording when one is approved
+ * (src/config/site.ts → demoVideo).
+ */
+const frames = [
+  {
+    time: '2:47 PM',
+    title: 'A message lands on your phone',
+    text: 'The notification appears on your Mac too, with the sender and text — nothing to unlock.',
+  },
+  {
+    time: '2:48 PM',
+    title: 'You reply from the Mac',
+    text: 'Because the notification offers a reply, you type it on your keyboard. The phone sends it.',
+  },
+  {
+    time: '2:52 PM',
+    title: 'The slides go to your phone',
+    text: 'Sidekick shows the destination before sending, then the phone checks the file on arrival.',
+  },
+  {
+    time: '3:01 PM',
+    title: 'You show the demo from your phone',
+    text: 'Start mirroring, tap Allow on the phone once, and click through the app from your Mac.',
+  },
+];
+---
+<section id="walkthrough" class="section section--rule walk" aria-labelledby="walk-title">
+  <div class="container">
+    <div class="walk__head">
+      <p class="eyebrow">Illustrative workflow</p>
+      <h2 id="walk-title">Fourteen minutes, one phone, zero pickups.</h2>
+      <p class="lede">An afternoon with Sidekick, step by step. Each step is something the current beta build does; the people and files are invented.</p>
+    </div>
+
+    <ol class="walk__frames">
+      {frames.map((f, i) => (
+        <li class="walk__frame">
+          <div class="walk__art" aria-hidden="true">
+            <div class="mini">
+              {i === 0 && (
+                <div class="mini__stack">
+                  <div class="phone__notif">
+                    <div class="ui-row"><Icon name="message-square" size={12} /><span class="phone__notif-app">Chat app · now</span></div>
+                    <div class="phone__notif-title">Maya Chen</div>
+                    <div class="phone__notif-text">Are we still on for 3?</div>
+                  </div>
+                  <div class="mini__arrow"><Icon name="arrow-right" /></div>
+                  <div class="mini__mac-row"><span class="ui-avatar">MC</span><div><div class="ui-h">Maya Chen</div><div class="ui-m">On your Mac</div></div></div>
+                </div>
+              )}
+              {i === 1 && (
+                <div class="mini__stack">
+                  <div class="ui-b">Are we still on for 3?</div>
+                  <div class="ui-field"><span class="ui-grow">Yes — see you at 3<span class="ui-caret"></span></span></div>
+                  <span class="ui-btn ui-btn--accent mini__end"><Icon name="reply" />Reply</span>
+                </div>
+              )}
+              {i === 2 && (
+                <div class="mini__stack">
+                  <div class="ui-row"><span class="ui-app"><Icon name="file" /></span><div class="ui-grow"><div class="ui-b">Slides.pdf</div><div class="ui-m ui-mono">→ Download › ConnectSuite</div></div></div>
+                  <div class="ui-progress" style="--p:100%"><i></i></div>
+                  <div class="ui-note"><Icon name="shield-check" />Checked on the phone</div>
+                </div>
+              )}
+              {i === 3 && (
+                <div class="mini__mirror">
+                  <div class="mini__screen"><div class="ui-home"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+                  <span class="mini__cursor"><Icon name="mouse-pointer-2" /></span>
+                </div>
+              )}
+            </div>
+          </div>
+          <p class="walk__time mono">{f.time}</p>
+          <h3>{f.title}</h3>
+          <p>{f.text}</p>
+        </li>
+      ))}
+    </ol>
+    <p class="illus-label walk__label">Illustrative workflow · fictional data · no recording yet</p>
+  </div>
+</section>
+
+<style>
+  .walk__head {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 44rem;
+    margin-bottom: var(--s-12);
+  }
+  .walk__head h2 {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  .walk__frames {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-10) var(--s-6);
+    counter-reset: walk;
+  }
+  .walk__frame {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    position: relative;
+  }
+  .walk__frame h3 {
+    font-size: 1.1875rem;
+    letter-spacing: -0.015em;
+  }
+  .walk__frame p:last-child {
+    font-size: var(--fs-sm);
+  }
+  .walk__time {
+    color: var(--accent-text);
+    font-size: var(--fs-xs);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--line-strong);
+    position: relative;
+  }
+  .walk__time::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .walk__art {
+    container-type: inline-size;
+    background: var(--bg-chrome);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    aspect-ratio: 4 / 3;
+    display: grid;
+    place-items: center;
+    padding: 7%;
+    overflow: hidden;
+  }
+  .mini {
+    font-size: calc(100cqi / 30);
+    width: 100%;
+    color: #f2f3f5;
+    line-height: 1.35;
+  }
+  .mini__stack {
+    display: grid;
+    gap: 1.1em;
+  }
+  .mini__arrow {
+    justify-self: center;
+    transform: rotate(90deg);
+    color: var(--accent);
+  }
+  .mini__arrow :global(svg) {
+    width: 1.6em;
+    height: 1.6em;
+  }
+  .mini__mac-row {
+    display: flex;
+    gap: 0.9em;
+    align-items: center;
+    padding: 0.9em;
+    border-radius: 1em;
+    background: #1c1c1c;
+    border: 1px solid rgb(198 255 51 / 0.3);
+  }
+  .mini__end {
+    justify-self: end;
+  }
+  .mini__mirror {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+  .mini__screen {
+    width: 42%;
+    aspect-ratio: 9 / 16;
+    border-radius: 1.6em;
+    background: radial-gradient(120% 60% at 20% 0%, #1d2412, transparent 60%), #111214;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    overflow: hidden;
+  }
+  .mini__screen :global(.ui-home) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8em 0.6em;
+    padding: 1.6em 1em;
+  }
+  .mini__cursor {
+    position: absolute;
+    left: 54%;
+    top: 46%;
+    color: #fff;
+  }
+  .mini__cursor :global(svg) {
+    width: 2.2em;
+    height: 2.2em;
+  }
+  .walk__label {
+    margin-top: var(--s-8);
+  }
+  @media (min-width: 640px) {
+    .walk__frames {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1040px) {
+    .walk__frames {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

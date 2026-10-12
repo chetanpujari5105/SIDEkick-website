@@ -1,0 +1,75 @@
+---
+import Icon from '../Icon.astro';
+import MacWindow from './MacWindow.astro';
+interface Props { class?: string }
+---
+<MacWindow active="messages" title="Messages" subtitle="Text messages on your phone" class={Astro.props.class}>
+  <div class="ms">
+    <div class="ms__threads">
+      <div class="ms__thread is-active"><span class="ui-avatar">JL</span><div class="ui-grow"><div class="ui-h ui-ellipsis">Jordan Lee</div><div class="ui-m ui-ellipsis">Running 10 min late</div></div></div>
+      <div class="ms__thread"><span class="ui-avatar">SO</span><div class="ui-grow"><div class="ui-h ui-ellipsis">Sam Ortiz</div><div class="ui-m ui-ellipsis">Thanks!</div></div></div>
+      <div class="ms__thread"><span class="ui-avatar">AK</span><div class="ui-grow"><div class="ui-h ui-ellipsis">Alex Kim</div><div class="ui-m ui-ellipsis">See you Friday</div></div></div>
+    </div>
+    <div class="ms__chat ui-card">
+      <div class="ms__bubble ms__bubble--in">Running 10 min late, save me a seat?</div>
+      <div class="ms__bubble ms__bubble--out">Will do — third row.</div>
+      <div class="ms__bubble ms__bubble--in">Legend.</div>
+      <div class="ui-field ms__compose"><span class="ui-grow">See you soon<span class="ui-caret"></span></span><span class="ui-btn ui-btn--accent"><Icon name="send" />Send</span></div>
+    </div>
+  </div>
+</MacWindow>
+
+<style>
+  .ms {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 1.2em;
+  }
+  .ms__threads {
+    display: grid;
+    align-content: start;
+    gap: 0.4em;
+  }
+  .ms__thread {
+    display: flex;
+    gap: 0.9em;
+    align-items: center;
+    padding: 0.8em;
+    border-radius: 0.9em;
+    min-width: 0;
+  }
+  .ms__thread.is-active {
+    background: #1c1c1c;
+    border: 1px solid rgb(255 255 255 / 0.1);
+  }
+  .ms__chat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    justify-content: flex-end;
+  }
+  .ms__bubble {
+    max-width: 78%;
+    padding: 0.7em 1em;
+    border-radius: 1.1em;
+    font-size: 1.2em;
+  }
+  .ms__bubble--in {
+    background: #1f2023;
+    align-self: flex-start;
+  }
+  .ms__bubble--out {
+    background: #2a2d33;
+    align-self: flex-end;
+  }
+  .ms__compose {
+    margin-top: 0.6em;
+    font-size: 1.1em;
+  }
+  .ms__compose :global(.ui-btn) {
+    height: 2.4em;
+    font-size: 0.95em;
+  }
+</style>

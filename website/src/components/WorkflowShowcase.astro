@@ -1,0 +1,275 @@
+---
+import Icon from './Icon.astro';
+import SectionIntro from './SectionIntro.astro';
+import MirrorPane from './illustrations/MirrorPane.astro';
+import MessagesPane from './illustrations/MessagesPane.astro';
+import FilesPane from './illustrations/FilesPane.astro';
+import ClipboardPane from './illustrations/ClipboardPane.astro';
+import { workflows } from '../content/workflows';
+---
+<section id="features" class="section section--rule showcase" aria-labelledby="features-title">
+  <div class="container">
+    <SectionIntro eyebrow="What you can do" title="Keep working. Keep your phone within reach." id="features-title" align="split">
+      <p>Four everyday jobs, each built on what Android and macOS actually allow — and each telling you plainly where that line is.</p>
+    </SectionIntro>
+
+    <div class="showcase__ui" data-tabs>
+      <div class="showcase__tabs" role="tablist" aria-label="Sidekick workflows" hidden data-tablist>
+        {
+          workflows.map((w, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${w.id}`}
+              aria-controls={`panel-${w.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              class="showcase__tab"
+            >
+              <Icon name={w.icon} size={18} />
+              <span>{w.tab}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      {
+        workflows.map((w, i) => (
+          <div
+            class="showcase__panel"
+            id={`panel-${w.id}`}
+            data-panel
+            data-index={i}
+          >
+            <div class="showcase__visual" role="img" aria-label={w.visualLabel}>
+              {w.id === 'mirror' && <MirrorPane />}
+              {w.id === 'notifications' && <MessagesPane />}
+              {w.id === 'files' && <FilesPane />}
+              {w.id === 'clipboard' && <ClipboardPane />}
+            </div>
+            <div class="showcase__text">
+              <p class="showcase__kicker">
+                <Icon name={w.icon} size={16} /> {w.tab}
+              </p>
+              <h3>{w.heading}</h3>
+              <p>{w.body}</p>
+              <ul class="showcase__tasks">
+                {w.tasks.map((t) => (
+                  <li>
+                    <Icon name="check" size={16} />
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+              <p class="caveat">
+                <span>
+                  <strong>{w.caveat.title}</strong> {w.caveat.text}
+                </span>
+              </p>
+              <a class="arrow-link" href={w.link.href}>
+                <span>{w.link.label}</span>
+                <Icon name="arrow-right" size={16} />
+              </a>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    <p class="illus-label showcase__label">Illustrations · fictional data, not screenshots</p>
+  </div>
+</section>
+
+<script>
+  // ARIA tabs (manual activation is unnecessary here: panels are static, so arrows select directly).
+  // Without JS every panel stays visible and the tab list stays hidden.
+  for (const root of document.querySelectorAll<HTMLElement>('[data-tabs]')) {
+    const list = root.querySelector<HTMLElement>('[data-tablist]');
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+    if (!list || !tabs.length) continue;
+    list.hidden = false;
+    panels.forEach((p, i) => {
+      p.setAttribute('role', 'tabpanel');
+      p.setAttribute('aria-labelledby', tabs[i].id);
+    });
+    root.classList.add('is-enhanced');
+    const select = (index: number, focus = false) => {
+      tabs.forEach((tab, i) => {
+        const on = i === index;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+        panels[i].hidden = !on;
+        if (on) panels[i].tabIndex = 0;
+      });
+      if (focus) tabs[index].focus();
+    };
+    select(0);
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(i));
+      tab.addEventListener('keydown', (e) => {
+        const last = tabs.length - 1;
+        let next: number | null = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = i === last ? 0 : i + 1;
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = i === 0 ? last : i - 1;
+        if (e.key === 'Home') next = 0;
+        if (e.key === 'End') next = last;
+        if (next !== null) {
+          e.preventDefault();
+          select(next, true);
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  .showcase__tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-2);
+    margin-bottom: var(--s-8);
+  }
+  .showcase__tabs[hidden] {
+    display: none;
+  }
+  .showcase__tab {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 48px;
+    padding: var(--s-2) var(--s-4);
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--text-body);
+    font-size: var(--fs-sm);
+    font-weight: 520;
+    text-align: left;
+    transition:
+      color var(--dur-fast),
+      border-color var(--dur-fast),
+      background-color var(--dur-fast);
+  }
+  .showcase__tab:hover {
+    color: var(--text);
+    border-color: rgb(255 255 255 / 0.26);
+  }
+  .showcase__tab[aria-selected='true'] {
+    color: var(--text);
+    background: var(--surface-raised);
+    border-color: var(--accent-line);
+  }
+  .showcase__tab[aria-selected='true'] :global(svg) {
+    color: var(--accent);
+  }
+  .showcase__tab:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .showcase__panel {
+    display: grid;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  .showcase__panel + .showcase__panel {
+    margin-top: var(--s-20);
+  }
+  :global(.is-enhanced) .showcase__panel + .showcase__panel {
+    margin-top: 0;
+  }
+  .showcase__panel[hidden] {
+    display: none;
+  }
+  .showcase__panel:focus-visible {
+    outline-offset: 8px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.is-enhanced) .showcase__panel:not([hidden]) {
+      animation: panel-in var(--dur-med) var(--ease-out);
+    }
+  }
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+  .showcase__visual {
+    padding: clamp(0.75rem, 0.3rem + 2vw, 2rem);
+    background: var(--bg-chrome);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  .showcase__text {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+    max-width: 34rem;
+  }
+  .showcase__kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  :global(.is-enhanced) .showcase__kicker {
+    display: none;
+  }
+  .showcase__text h3 {
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2.125rem);
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+  }
+  .showcase__tasks {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-3);
+    color: var(--text);
+  }
+  .showcase__tasks li {
+    display: flex;
+    gap: var(--s-3);
+    align-items: flex-start;
+  }
+  .showcase__tasks :global(svg) {
+    flex: none;
+    margin-top: 0.3em;
+    color: var(--text-muted);
+  }
+  .showcase__label {
+    margin-top: var(--s-6);
+  }
+
+  @media (min-width: 760px) {
+    .showcase__tabs {
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      gap: var(--s-6);
+      margin-bottom: var(--s-10);
+    }
+    .showcase__tab {
+      border: 0;
+      border-radius: 0;
+      padding: 0 0 var(--s-3);
+      margin-bottom: -1px;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      font-size: 1rem;
+    }
+    .showcase__tab[aria-selected='true'] {
+      background: transparent;
+      border-bottom-color: var(--accent);
+    }
+  }
+  @media (min-width: 1040px) {
+    .showcase__panel {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--s-12);
+    }
+  }
+</style>

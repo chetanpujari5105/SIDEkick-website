@@ -1,0 +1,170 @@
+---
+import Icon from './Icon.astro';
+import CallsPane from './illustrations/CallsPane.astro';
+import PhoneFrame from './illustrations/PhoneFrame.astro';
+---
+<section class="section section--rule story story--calls" aria-labelledby="story-calls-title">
+  <div class="container story__grid">
+    <div class="story__text">
+      <p class="eyebrow">Calls and notifications</p>
+      <h2 id="story-calls-title">Answer the interruption without leaving your Mac.</h2>
+      <p>When your phone rings in a bag across the room, Sidekick shows who it is on the Mac. Answer or decline from there, and pick the phone up only if you’re taking the call.</p>
+      <dl class="story__facts">
+        <div>
+          <dt>On the Mac</dt>
+          <dd>Caller name, answer, decline, recent calls and dialling a number</dd>
+        </div>
+        <div>
+          <dt>On the phone</dt>
+          <dd>The conversation itself. Android doesn’t let apps carry call audio, so you speak on your phone.</dd>
+        </div>
+        <div>
+          <dt>Everything else</dt>
+          <dd>Notifications can appear as regular Mac notifications, so you see them even with Sidekick in the background.</dd>
+        </div>
+      </dl>
+    </div>
+    <div class="story__visual story__visual--wide" role="img" aria-label="Illustration: the Sidekick Calls screen on a Mac showing an incoming call from a fictional contact, Jordan Lee, with Answer and Decline buttons and a note that call audio stays on the phone.">
+      <CallsPane />
+      <p class="illus-label">Illustration · fictional data</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--rule story story--files" aria-labelledby="story-files-title">
+  <div class="container story__grid story__grid--files">
+    <div class="story__visual story__visual--phone" role="img" aria-label="Illustration: an Android phone showing two files received from a Mac, each marked as checked.">
+      <PhoneFrame>
+        <div class="tx__head">
+          <div class="tx__title">Transfers</div>
+          <div class="ui-m">From Studio Mac</div>
+        </div>
+        <div class="tx__row"><span class="ui-app"><Icon name="file" /></span><div class="ui-grow"><div class="ui-b ui-ellipsis">Itinerary.pdf</div><div class="ui-m">1.2 MB · checked</div></div><Icon name="check" class="tx__ok" /></div>
+        <div class="tx__row"><span class="ui-app"><Icon name="image" /></span><div class="ui-grow"><div class="ui-b ui-ellipsis">Venue-map.png</div><div class="ui-m">3.4 MB · checked</div></div><Icon name="check" class="tx__ok" /></div>
+        <div class="tx__dest">
+          <div class="ui-m">Saved to</div>
+          <div class="ui-b ui-mono">Download › ConnectSuite</div>
+        </div>
+      </PhoneFrame>
+      <p class="illus-label">Illustration · fictional data</p>
+    </div>
+    <div class="story__text">
+      <p class="eyebrow">Files</p>
+      <h2 id="story-files-title">Move the file. Not your entire workflow.</h2>
+      <p>Pick files on your Mac and Sidekick tells you exactly what will be sent and where it will land before a single byte moves. Going the other way, drag from a shared phone folder straight into Finder.</p>
+      <div class="table-wrap story__table" tabindex="0" role="region" aria-label="Where files go">
+        <table>
+          <caption class="visually-hidden">Where transferred files are saved</caption>
+          <thead><tr><th scope="col">Direction</th><th scope="col">Lands in</th></tr></thead>
+          <tbody>
+            <tr><td>Mac → phone</td><td><code>Download/ConnectSuite</code>, shown in Sidekick as <em>Received files</em>, or a folder you’ve shared</td></tr>
+            <tr><td>Phone → Mac</td><td><code>~/Downloads/Sidekick</code>, or the folder you choose</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="story__small">Files sent to the phone are checked against a fingerprint taken before sending. Files arriving on the Mac are marked as downloaded, so macOS treats them with its usual care. Very large files pulled from the phone aren’t yet verified block by block — Sidekick labels them as unverified.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .story__grid {
+    display: grid;
+    gap: var(--s-12);
+    align-items: center;
+  }
+  .story__text {
+    display: grid;
+    gap: var(--s-5);
+    max-width: 36rem;
+  }
+  .story__text h2 {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  .story__facts {
+    display: grid;
+    gap: 0;
+    margin-top: var(--s-2);
+    border-top: 1px solid var(--line);
+  }
+  .story__facts > div {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .story__facts dt {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .story__facts dd {
+    color: var(--text);
+  }
+  .story__visual {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .story__visual--phone {
+    justify-items: center;
+  }
+  .story__visual--phone :global(.phone) {
+    max-width: 300px;
+  }
+  .story__small {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .story__table td:first-child {
+    white-space: nowrap;
+    color: var(--text);
+  }
+  .tx__head {
+    padding: 1em 0.4em 0.6em;
+  }
+  .tx__title {
+    font-size: 2.4em;
+    font-weight: 620;
+    letter-spacing: -0.02em;
+  }
+  .tx__row {
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+    padding: 1em;
+    border-radius: 1.4em;
+    background: #161616;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    min-width: 0;
+  }
+  .tx__row :global(.tx__ok) {
+    width: 1.5em;
+    height: 1.5em;
+    color: var(--accent);
+    flex: none;
+  }
+  .tx__dest {
+    margin-top: auto;
+    padding: 1em;
+    border-top: 1px solid rgb(255 255 255 / 0.08);
+  }
+  @media (min-width: 1040px) {
+    .story__grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+      gap: var(--s-16);
+    }
+    .story--calls .story__visual--wide {
+      margin-right: calc(var(--gutter) * -1);
+    }
+    .story__grid--files {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      align-items: start;
+    }
+    .story__grid--files .story__visual--phone {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+</style>

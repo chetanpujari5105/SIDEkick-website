@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PrimaryButton from '../components/PrimaryButton.astro';
+---
+<BaseLayout title="Page not found" description="This page doesn’t exist." path="/404">
+  <PageHeader eyebrow="404" title="Nothing here." lede="The page you were looking for doesn’t exist — or isn’t published yet.">
+    <div><PrimaryButton href="/" icon="arrow-right">Back to Sidekick</PrimaryButton></div>
+  </PageHeader>
+</BaseLayout>

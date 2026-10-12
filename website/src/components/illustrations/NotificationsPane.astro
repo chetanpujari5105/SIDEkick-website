@@ -1,0 +1,93 @@
+---
+import Icon from '../Icon.astro';
+import MacWindow from './MacWindow.astro';
+interface Props { class?: string }
+---
+<MacWindow active="notifications" title="Notifications" subtitle="From your phone" class={Astro.props.class}>
+  <div class="np">
+    <div class="np__list">
+      <div class="ui-card ui-card--raised np__item is-selected">
+        <div class="ui-row">
+          <span class="ui-avatar">MC</span>
+          <div class="ui-grow">
+            <div class="ui-row"><span class="ui-h ui-grow ui-ellipsis">Maya Chen</span><span class="ui-m">now</span></div>
+            <div class="ui-b ui-ellipsis">Are we still on for 3? I can bring the slides.</div>
+            <div class="ui-m">Chat app</div>
+          </div>
+        </div>
+      </div>
+      <div class="ui-card np__item">
+        <div class="ui-row">
+          <span class="ui-app"><Icon name="clock" /></span>
+          <div class="ui-grow">
+            <div class="ui-row"><span class="ui-h ui-grow ui-ellipsis">Calendar</span><span class="ui-m">4 min</span></div>
+            <div class="ui-b ui-ellipsis">Design review · 3:00 PM</div>
+          </div>
+        </div>
+      </div>
+      <div class="ui-card np__item">
+        <div class="ui-row">
+          <span class="ui-app"><Icon name="download" /></span>
+          <div class="ui-grow">
+            <div class="ui-row"><span class="ui-h ui-grow ui-ellipsis">Delivery</span><span class="ui-m">12 min</span></div>
+            <div class="ui-b ui-ellipsis">Your parcel is out for delivery</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui-card np__detail">
+      <div class="ui-row">
+        <span class="ui-avatar">MC</span>
+        <div class="ui-grow">
+          <div class="ui-h">Maya Chen</div>
+          <div class="ui-m">Chat app · on your phone</div>
+        </div>
+      </div>
+      <p class="ui-b np__msg">Are we still on for 3? I can bring the slides.</p>
+      <div class="ui-field"><span class="ui-grow">Yes — see you at 3<span class="ui-caret"></span></span><span class="ui-btn ui-btn--accent np__send"><Icon name="send" />Reply</span></div>
+      <div class="ui-row np__actions">
+        <span class="ui-btn">Mark as read</span>
+        <span class="ui-btn">Dismiss</span>
+      </div>
+      <div class="ui-note"><Icon name="info" />Reply appears because this notification offers one.</div>
+    </div>
+  </div>
+</MacWindow>
+
+<style>
+  .np {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 1.2em;
+    min-height: 0;
+    flex: 1;
+  }
+  .np__list {
+    display: grid;
+    gap: 0.9em;
+    align-content: start;
+  }
+  .np__item {
+    padding: 1.1em;
+  }
+  .np__item.is-selected {
+    border-color: rgb(198 255 51 / 0.35);
+  }
+  .np__detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+  }
+  .np__msg {
+    margin: 0;
+    font-size: 1.35em;
+    color: #f2f3f5;
+  }
+  .np__send {
+    height: 2.5em;
+    font-size: 0.95em;
+  }
+  .np__actions {
+    gap: 0.7em;
+  }
+</style>

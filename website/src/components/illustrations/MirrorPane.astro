@@ -1,0 +1,114 @@
+---
+import Icon from '../Icon.astro';
+import MacWindow from './MacWindow.astro';
+interface Props { class?: string }
+---
+<MacWindow active="mirror" title="Mirror" subtitle="Mirroring · control on" class={Astro.props.class}>
+  <div class="mp">
+    <div class="mp__stage">
+      <div class="mp__phone">
+        <div class="mp__status"><span>3:01</span><span>●●</span></div>
+        <div class="ui-home"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="mp__dock"><i></i><i></i><i></i><i></i></div>
+        <span class="mp__cursor"><Icon name="mouse-pointer-2" /></span>
+      </div>
+    </div>
+    <div class="mp__side">
+      <div class="ui-card">
+        <div class="ui-m">Session</div>
+        <div class="ui-row mp__live"><span class="ui-dot"></span><span class="ui-h">Mirroring</span></div>
+        <div class="mp__btns"><span class="ui-btn">Stop</span><span class="ui-btn"><Icon name="app-window" />Float window</span></div>
+      </div>
+      <div class="ui-card">
+        <div class="ui-m">Control</div>
+        <div class="ui-b">Click, scroll and type</div>
+        <div class="mp__keys"><span class="ui-pill">Back</span><span class="ui-pill">Home</span><span class="ui-pill">Recents</span></div>
+      </div>
+      <div class="ui-note"><Icon name="eye-off" />Banking apps and the lock screen show as black.</div>
+    </div>
+  </div>
+</MacWindow>
+
+<style>
+  .mp {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 1.4em;
+  }
+  .mp__stage {
+    background: #060607;
+    border: 1px solid rgb(255 255 255 / 0.06);
+    border-radius: 1.1em;
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    padding: 1.2em;
+  }
+  .mp__phone {
+    position: relative;
+    height: 100%;
+    aspect-ratio: 9 / 19;
+    border-radius: 1.6em;
+    background: radial-gradient(120% 60% at 20% 0%, #1d2412, transparent 60%), #111214;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .mp__phone :global(.ui-home) {
+    gap: 1em 0.8em;
+    padding: 1.4em 1.2em;
+    font-size: 0.8em;
+  }
+  .mp__status {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    padding: 0.9em 1.3em 0;
+    color: #c4c5cc;
+  }
+  .mp__dock {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8em;
+    padding: 0.9em 1.1em 1.5em;
+  }
+  .mp__dock i {
+    aspect-ratio: 1;
+    border-radius: 28%;
+    background: #2a2c31;
+  }
+  .mp__cursor {
+    position: absolute;
+    left: 58%;
+    top: 40%;
+    color: #fff;
+    filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.6));
+  }
+  .mp__cursor :global(svg) {
+    width: 2em;
+    height: 2em;
+  }
+  .mp__side {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    min-width: 0;
+  }
+  .mp__side .ui-card {
+    display: grid;
+    gap: 0.7em;
+  }
+  .mp__live {
+    gap: 0.6em;
+  }
+  .mp__btns,
+  .mp__keys {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+  }
+</style>

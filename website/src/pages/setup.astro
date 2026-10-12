@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import DocLayout from '../components/DocLayout.astro';
+import Notice from '../components/Notice.astro';
+import { site } from '../config/site';
+const toc = [
+  { id: 'before', label: 'Before you start' },
+  { id: 'mac', label: 'Install on the Mac' },
+  { id: 'phone', label: 'Install on the phone' },
+  { id: 'pair', label: 'Pair' },
+  { id: 'permissions', label: 'Turn on features' },
+  { id: 'mirroring', label: 'Mirroring' },
+  { id: 'token', label: 'Your beta token' },
+  { id: 'background', label: 'Staying connected' },
+  { id: 'removing', label: 'Removing Sidekick' },
+];
+---
+<BaseLayout title="Setup" description="Install Sidekick on your Mac and Android phone, pair them with a QR code, and turn on the features you want." path="/setup">
+  <PageHeader eyebrow="Setup" title="Install, pair, and choose what to share." lede="About ten minutes, once. These steps match the current beta build; each warning you’ll see is listed in order." />
+  <DocLayout toc={toc}>
+    <Notice tone="warning" title="This is a test build">
+      <p>Neither app is signed by Apple or listed on Google Play yet, so both systems warn you before opening it. Never turn off Gatekeeper or System Integrity Protection — nothing here needs it.</p>
+    </Notice>
+
+    <h2 id="before">Before you start</h2>
+    <ul>
+      <li>A Mac on {site.minimumRequirements.mac}.</li>
+      <li>An Android phone on {site.minimumRequirements.android}.</li>
+      <li>Both on the same network — the same Wi-Fi, or the Mac joined to the phone’s hotspot.</li>
+      <li>The files and beta token from your invitation.</li>
+    </ul>
+
+    <h2 id="mac">1. Install on the Mac</h2>
+    <ol>
+      <li>Open the <code>.dmg</code> you were sent — the <em>arm64</em> one for Apple silicon, the other for Intel — and drag <strong>Sidekick</strong> into <strong>Applications</strong>. The Intel build hasn’t been run on an Intel Mac yet; if you have one, please say so in your report.</li>
+      <li>Open Sidekick. macOS says it <strong>could not verify</strong> the app. Choose <strong>Done</strong>.</li>
+      <li>Open <strong>System Settings → Privacy &amp; Security</strong>, find the message about Sidekick, click <strong>Open Anyway</strong>, enter your password and confirm. You only do this once.</li>
+      <li>Enter your <strong>beta token</strong>: paste it and press <strong>Use this token</strong>, or press <strong>Open token file…</strong>.</li>
+      <li>If macOS asks whether Sidekick may <strong>find devices on your local network</strong>, click <strong>Allow</strong> — that’s how it reaches your phone. Sidekick then shows <strong>Scan this with your phone</strong> and a code.</li>
+    </ol>
+
+    <h2 id="phone">2. Install on the phone</h2>
+    <ol>
+      <li>Open the <code>.apk</code> you were sent.</li>
+      <li>Android asks you to allow that app to <strong>install unknown apps</strong>. Turn it on for that app only, go back, and tap <strong>Install</strong>.</li>
+      <li>If Google Play Protect warns about an unknown developer, read it; install only if the file came from the person who invited you.</li>
+    </ol>
+
+    <h2 id="pair">3. Pair</h2>
+    <ol>
+      <li>Open Sidekick on the phone and tap <strong>Get started</strong>, then <strong>Continue</strong>.</li>
+      <li>On <strong>Connect your Mac</strong>, tap <strong>Scan the code</strong> and allow the camera. The camera only reads the code, on the phone.</li>
+      <li>Point it at the code on your Mac. The phone shows <strong>Paired with</strong> your Mac’s name; the Mac shows your phone as <strong>Connected</strong>.</li>
+    </ol>
+    <p>The pairing code is a one-time secret for your two devices. Don’t share screenshots of it.</p>
+
+    <h2 id="permissions">4. Turn on the features you want</h2>
+    <p>Each feature asks for its own permission the first time you use it. Skip any you don’t want — the rest still work, and each screen says what’s missing. Three are switched on by hand in Android Settings rather than by a prompt:</p>
+    <ul>
+      <li><strong>Notification access</strong> — to show phone notifications on the Mac.</li>
+      <li><strong>Accessibility service</strong> — to control the phone from the Mac while mirroring.</li>
+      <li><strong>Screen capture</strong> — allowed each time mirroring starts.</li>
+    </ul>
+    <p><a href="/permissions">Every permission and what it’s for</a>.</p>
+
+    <h2 id="mirroring">Mirroring</h2>
+    <p>On the Mac’s Overview, press <strong>Start mirroring</strong> (<kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>M</kbd>). Android asks you to allow screen capture <strong>every time</strong> — that’s Android’s rule. To click and type into the phone, switch on Sidekick’s accessibility service when asked. Banking apps, protected video and the lock screen show as black.</p>
+
+    <h2 id="token">Your beta token</h2>
+    <ul>
+      <li>Access runs until the end date written in your token — {site.betaAccessDuration?.days} days from its start date. <strong>Settings › About › Beta access</strong> shows the date and days left.</li>
+      <li>You’ll see one quiet notice 7 days before the end and one the day before. Reinstalling doesn’t change the date.</li>
+      <li>When it ends, Sidekick shows a screen with a box for a new token. Nothing is deleted: Activity, Settings and received files stay.</li>
+      <li>If Sidekick says your Mac’s date looks earlier than before, check <strong>System Settings › General › Date &amp; Time</strong>.</li>
+    </ul>
+
+    <h2 id="background">Staying connected</h2>
+    <p>While your Mac is awake and connected, Sidekick keeps the phone ready to answer it, with a visible notification on the phone. When the Mac sleeps or disconnects, that stops. If your phone closes Sidekick in the background, find <strong>Battery</strong> or <strong>Background usage</strong> for Sidekick in the phone’s settings and allow it.</p>
+
+    <h2 id="removing">Removing Sidekick</h2>
+    <ul>
+      <li><strong>Phone:</strong> uninstall Sidekick. Files it received stay in <code>Download/ConnectSuite</code>.</li>
+      <li><strong>Mac:</strong> quit Sidekick, move it to the Bin, delete <code>~/Library/Application Support/sidekick-desktop</code>, and in Keychain Access delete <em>Sidekick Safe Storage</em>. Received files stay in <code>~/Downloads/Sidekick</code>.</li>
+    </ul>
+    <p>Stuck? See <a href="/help">Help</a>.</p>
+  </DocLayout>
+</BaseLayout>

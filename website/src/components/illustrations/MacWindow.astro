@@ -1,0 +1,49 @@
+---
+import Icon from '../Icon.astro';
+interface Props {
+  active: 'overview' | 'mirror' | 'files' | 'photos' | 'messages' | 'notifications' | 'clipboard' | 'calls' | 'apps';
+  title: string;
+  subtitle?: string;
+  status?: string;
+  class?: string;
+  compactNav?: boolean;
+}
+const { active, title, subtitle, status = 'Connected · Android phone', class: className } = Astro.props;
+const nav = [
+  { id: 'overview', label: 'Overview', icon: 'layout-grid' },
+  { id: 'mirror', label: 'Mirror', icon: 'monitor-smartphone' },
+  { id: 'files', label: 'Files', icon: 'folder' },
+  { id: 'photos', label: 'Photos', icon: 'image' },
+  { id: 'messages', label: 'Messages', icon: 'message-square' },
+  { id: 'notifications', label: 'Notifications', icon: 'bell' },
+  { id: 'clipboard', label: 'Clipboard', icon: 'clipboard' },
+  { id: 'calls', label: 'Calls', icon: 'phone' },
+  { id: 'apps', label: 'Apps', icon: 'app-window' },
+];
+---
+<div class:list={['mac', className]}>
+  <div class="mac__window">
+    <div class="mac__bar">
+      <div class="mac__lights"><i></i><i></i><i></i></div>
+      <div class="mac__island"><span class="ui-dot"></span>{status}</div>
+      <div></div>
+    </div>
+    <div class="mac__body">
+      <div class="mac__side">
+        <div class="mac__brand"><img src="/mark-56.png" alt="" width="60" height="28" loading="lazy" />Sidekick</div>
+        {
+          nav.map((n) => (
+            <div class:list={['mac__nav', { 'is-active': n.id === active }]}>
+              <Icon name={n.icon} />
+              {n.label}
+            </div>
+          ))
+        }
+      </div>
+      <div class="mac__main">
+        <div class="mac__title"><b>{title}</b>{subtitle && <span>{subtitle}</span>}</div>
+        <slot />
+      </div>
+    </div>
+  </div>
+</div>

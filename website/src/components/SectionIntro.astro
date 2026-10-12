@@ -1,0 +1,52 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  id?: string;
+  as?: 'h1' | 'h2';
+  align?: 'start' | 'split';
+  class?: string;
+}
+const { eyebrow, title, id, as = 'h2', align = 'start', class: className } = Astro.props;
+const H = as;
+---
+<header class:list={['intro', `intro--${align}`, className]}>
+  <div class="intro__head">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <H id={id} class="intro__title">{title}</H>
+  </div>
+  {Astro.slots.has('default') && <div class="intro__body"><slot /></div>}
+</header>
+
+<style>
+  .intro {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+  }
+  .intro__head {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .intro__title {
+    font-size: var(--fs-h2);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+  }
+  .intro__body {
+    max-width: 56ch;
+    font-size: var(--fs-lg);
+    line-height: 1.55;
+  }
+  .intro__body :global(p + p) {
+    margin-top: var(--s-3);
+  }
+  @media (min-width: 960px) {
+    .intro--split {
+      grid-template-columns: 7fr 5fr;
+      align-items: end;
+      gap: var(--s-12);
+    }
+  }
+</style>

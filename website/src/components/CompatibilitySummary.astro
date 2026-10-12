@@ -1,0 +1,167 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../config/site';
+const limits = [
+  { q: 'Why does mirroring ask for permission every time?', a: 'Android requires a fresh tap to allow screen capture for every session. No app can remember it for you.' },
+  { q: 'Why are some apps black when mirrored?', a: 'Banking apps, protected video and the lock screen mark their screens as secure. Android sends a black image for them, and Sidekick tells you why.' },
+  { q: 'Why doesn’t call audio come to the Mac?', a: 'Android reserves call audio for system apps. Sidekick shows the call and lets you answer or decline; you talk on the phone.' },
+  { q: 'Why is the clipboard different in each direction?', a: 'Android blocks apps from reading the clipboard in the background. Mac → phone is automatic; phone → Mac works while Sidekick is open on the phone or when you share text to it.' },
+  { q: 'Why can I only browse some folders?', a: 'Android gives apps access to the folders you grant, not the whole storage. The top of storage and the Download folder itself can’t be granted.' },
+  { q: 'Why does it need the same network?', a: 'The apps find and reach each other locally. There’s no relay, so they can’t connect across the internet.' },
+  { q: 'What if my phone closes Sidekick in the background?', a: 'Some phones stop background apps aggressively. Allow Sidekick under Battery or Background usage in your phone’s settings.' },
+];
+---
+<section id="compatibility" class="section section--rule compat" aria-labelledby="compat-title">
+  <div class="container">
+    <div class="compat__head">
+      <p class="eyebrow">Compatibility</p>
+      <h2 id="compat-title">What it runs on, and what we’ve actually tested.</h2>
+    </div>
+
+    <div class="compat__grid">
+      <dl class="compat__specs">
+        <div>
+          <dt><Icon name="laptop" size={18} />Mac</dt>
+          <dd>{site.minimumRequirements.mac}</dd>
+        </div>
+        <div>
+          <dt><Icon name="smartphone" size={18} />Android</dt>
+          <dd>{site.minimumRequirements.android}</dd>
+        </div>
+        <div>
+          <dt><Icon name="router" size={18} />Network</dt>
+          <dd>{site.minimumRequirements.network}</dd>
+        </div>
+        <div>
+          <dt><Icon name="cpu" size={18} />Mac builds</dt>
+          <dd>
+            <ul class="compat__builds">
+              {site.macBuilds.map((b) => (
+                <li>
+                  <span class="compat__arch">{b.arch}</span>
+                  <span class:list={['compat__tag', { 'compat__tag--warn': !b.verified }]}>
+                    {b.verified ? 'Tested' : 'Not yet tested'}
+                  </span>
+                  <span class="compat__note">{b.note}</span>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+        <div>
+          <dt><Icon name="flask-conical" size={18} />Tested so far</dt>
+          <dd>
+            <p>{site.testedPlatforms.primary.join(' · ')}</p>
+            <p class="compat__note">Partial checks: {site.testedPlatforms.partial.join(', ')}.</p>
+            <p class="compat__note">{site.testedPlatforms.note}</p>
+          </dd>
+        </div>
+        <div>
+          <dt><Icon name="info" size={18} />Not supported</dt>
+          <dd>iPhone, iPad and Windows. USB connections. Connecting over the internet.</dd>
+        </div>
+      </dl>
+
+      <div class="compat__limits">
+        <h3>Limits worth knowing</h3>
+        <div class="acc">
+          {limits.map((l) => (
+            <details>
+              <summary>
+                <span>{l.q}</span>
+                <Icon name="chevron-down" size={18} />
+              </summary>
+              <p>{l.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .compat__head {
+    max-width: 44rem;
+    display: grid;
+    gap: var(--s-4);
+    margin-bottom: var(--s-12);
+  }
+  .compat__head h2 {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  .compat__grid {
+    display: grid;
+    gap: var(--s-12);
+  }
+  .compat__specs {
+    border-top: 1px solid var(--line);
+  }
+  .compat__specs > div {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-5) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .compat__specs dt {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+  .compat__specs dd {
+    color: var(--text);
+    display: grid;
+    gap: var(--s-2);
+  }
+  .compat__note {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+  .compat__builds {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-3);
+  }
+  .compat__builds li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-3);
+  }
+  .compat__builds .compat__note {
+    flex-basis: 100%;
+  }
+  .compat__tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.15em 0.6em;
+    border-radius: 4px;
+    border: 1px solid var(--line-strong);
+    color: var(--text-body);
+  }
+  .compat__tag--warn {
+    border-color: rgb(255 181 71 / 0.4);
+    color: #ffc773;
+  }
+  .compat__limits h3 {
+    font-size: 1.25rem;
+    margin-bottom: var(--s-4);
+  }
+  @media (min-width: 900px) {
+    .compat__specs > div {
+      grid-template-columns: 11rem 1fr;
+      gap: var(--s-6);
+    }
+  }
+  @media (min-width: 1040px) {
+    .compat__grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--s-16);
+    }
+  }
+</style>

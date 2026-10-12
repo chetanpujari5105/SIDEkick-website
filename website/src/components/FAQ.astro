@@ -1,0 +1,59 @@
+---
+import Icon from './Icon.astro';
+import type { Faq } from '../content/faq';
+interface Props {
+  items: Faq[];
+  title?: string;
+  id?: string;
+}
+const { items, title = 'Questions, answered plainly', id = 'faq' } = Astro.props;
+---
+<section id={id} class="section section--rule faq" aria-labelledby={`${id}-title`}>
+  <div class="container faq__grid">
+    <div class="faq__head">
+      <p class="eyebrow">FAQ</p>
+      <h2 id={`${id}-title`}>{title}</h2>
+      <p class="muted">More in <a class="text-link" href="/help">Help</a>.</p>
+    </div>
+    <div class="acc">
+      {
+        items.map((f) => (
+          <details>
+            <summary>
+              <span>{f.q}</span>
+              <Icon name="chevron-down" size={18} />
+            </summary>
+            <div>
+              {f.a.split('\n\n').map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__grid {
+    display: grid;
+    gap: var(--s-10);
+  }
+  .faq__head {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+  }
+  .faq__head h2 {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  @media (min-width: 1040px) {
+    .faq__grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+      gap: var(--s-16);
+    }
+  }
+</style>

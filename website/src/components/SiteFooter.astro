@@ -1,0 +1,142 @@
+---
+import { site, primaryCta } from '../config/site';
+const groups = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'Features', href: '/#features' },
+      { label: 'How it works', href: '/#how-it-works' },
+      { label: 'What’s next', href: '/roadmap' },
+      { label: 'Changelog', href: '/changelog' },
+    ],
+  },
+  {
+    title: 'Get started',
+    links: [
+      { label: site.releaseMode === 'public' ? 'Get Sidekick' : 'Beta access', href: primaryCta.href },
+      { label: 'Setup', href: '/setup' },
+      { label: 'Help', href: '/help' },
+      ...(site.supportEmail ? [{ label: 'Support', href: `mailto:${site.supportEmail}` }] : []),
+    ],
+  },
+  {
+    title: 'Trust',
+    links: [
+      { label: 'Privacy', href: '/privacy' },
+      { label: 'Permissions', href: '/permissions' },
+    ],
+  },
+];
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <a href="/" class="site-footer__logo" aria-label="Sidekick home">
+          <img src="/mark-56.png" width="60" height="28" alt="" loading="lazy" />
+          <span>Sidekick</span>
+        </a>
+        <p>Android and Mac companion apps that talk to each other directly on your own network.</p>
+        <p class="site-footer__build mono">
+          Build {site.currentBuild.version} · {site.currentBuild.date}<br />
+          {site.releaseMode === 'invited-beta' ? 'Invited beta — not a public release' : ''}
+        </p>
+      </div>
+      {
+        groups.map((g) => (
+          <nav class="site-footer__col" aria-label={g.title}>
+            <h2>{g.title}</h2>
+            <ul>
+              {g.links.map((l) => (
+                <li>
+                  <a href={l.href}>{l.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+    <div class="site-footer__legal">
+      <p>Android is a trademark of Google LLC. Mac and macOS are trademarks of Apple Inc. Sidekick is an independent product and is not affiliated with or endorsed by Google or Apple.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: var(--s-16) var(--s-10);
+    font-size: var(--fs-sm);
+    background: var(--bg-chrome);
+  }
+  .site-footer__grid {
+    display: grid;
+    gap: var(--s-10);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .site-footer__brand {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--s-4);
+    max-width: 36ch;
+    align-content: start;
+  }
+  .site-footer__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    min-height: 44px;
+    width: fit-content;
+  }
+  .site-footer__logo img {
+    width: 36px;
+    height: auto;
+  }
+  .site-footer__build {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+  }
+  .site-footer__col h2 {
+    font-size: var(--fs-xs);
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    margin-bottom: var(--s-3);
+  }
+  .site-footer__col ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+  }
+  .site-footer__col a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    color: var(--text-body);
+    text-decoration: none;
+  }
+  .site-footer__col a:hover {
+    color: var(--text);
+  }
+  .site-footer__legal {
+    margin-top: var(--s-12);
+    padding-top: var(--s-6);
+    border-top: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: var(--fs-xs);
+    max-width: 90ch;
+  }
+  @media (min-width: 760px) {
+    .site-footer__grid {
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+    }
+    .site-footer__brand {
+      grid-column: auto;
+    }
+  }
+</style>

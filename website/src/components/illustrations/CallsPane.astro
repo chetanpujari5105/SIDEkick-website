@@ -1,0 +1,68 @@
+---
+import Icon from '../Icon.astro';
+import MacWindow from './MacWindow.astro';
+interface Props { class?: string }
+---
+<MacWindow active="calls" title="Calls" subtitle="Calls on your phone" class={Astro.props.class}>
+  <div class="cl">
+    <div class="ui-card ui-card--raised cl__incoming">
+      <div class="ui-m">Incoming call</div>
+      <div class="ui-row"><span class="ui-avatar cl__big">JL</span><div class="ui-grow"><div class="cl__name">Jordan Lee</div><div class="ui-m">Mobile</div></div></div>
+      <div class="ui-row cl__actions"><span class="ui-btn ui-btn--accent"><Icon name="phone" />Answer</span><span class="ui-btn ui-btn--danger">Decline</span></div>
+      <div class="ui-note"><Icon name="smartphone" />You talk on your phone. Call audio stays there.</div>
+    </div>
+    <div class="cl__recent">
+      <div class="ui-m">Recent</div>
+      <div class="cl__row"><Icon name="phone-incoming" /><span class="ui-b ui-grow ui-ellipsis">Sam Ortiz</span><span class="ui-m">10:12</span></div>
+      <div class="cl__row"><Icon name="phone" /><span class="ui-b ui-grow ui-ellipsis">Alex Kim</span><span class="ui-m">Yesterday</span></div>
+      <div class="cl__row"><Icon name="phone-incoming" /><span class="ui-b ui-grow ui-ellipsis">Dentist</span><span class="ui-m">Mon</span></div>
+    </div>
+  </div>
+</MacWindow>
+
+<style>
+  .cl {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1.2em;
+  }
+  .cl__incoming {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3em;
+  }
+  .cl__big {
+    width: 4.6em;
+    height: 4.6em;
+    font-size: 1.3em;
+  }
+  .cl__name {
+    font-size: 2em;
+    font-weight: 620;
+    letter-spacing: -0.02em;
+  }
+  .cl__actions {
+    gap: 0.7em;
+  }
+  .cl__recent {
+    display: grid;
+    align-content: start;
+    gap: 0.2em;
+  }
+  .cl__row {
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+    padding: 0.9em 0.4em;
+    border-bottom: 1px solid rgb(255 255 255 / 0.06);
+    color: #9a9ca8;
+    min-width: 0;
+  }
+  .cl__row :global(svg) {
+    width: 1.3em;
+    height: 1.3em;
+    flex: none;
+  }
+</style>

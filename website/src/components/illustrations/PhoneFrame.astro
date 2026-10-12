@@ -1,0 +1,23 @@
+---
+import Icon from '../Icon.astro';
+interface Props {
+  class?: string;
+  time?: string;
+  wallpaper?: boolean;
+}
+const { class: className, time = '9:41', wallpaper = false } = Astro.props;
+---
+<div class:list={['phone', className]}>
+  <div class="phone__body">
+    <div class="phone__screen">
+      {wallpaper && <div class="phone__wall"></div>}
+      <div class="phone__camera"></div>
+      <div class="phone__status">
+        <span>{time}</span>
+        <span class="phone__status-icons"><Icon name="wifi" /><Icon name="battery-medium" /></span>
+      </div>
+      <div class="phone__content"><slot /></div>
+      <div class="phone__homebar"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { changelog } from '../content/changelog';
+---
+<BaseLayout title="Changelog" description="Notable changes to Sidekick’s pre-release builds." path="/changelog">
+  <PageHeader eyebrow="Changelog" title="What’s changed." lede="Notable changes in pre-release builds. None of these is a public release; dates are when each change landed in a test build." />
+  <div class="container log">
+    <ol class="log__list">
+      {changelog.map((c) => (
+        <li class="log__entry">
+          <time class="mono" datetime={c.date}>{new Date(c.date + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}</time>
+          <div>
+            <h2>{c.title}</h2>
+            <ul>{c.items.map((i) => <li>{i}</li>)}</ul>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</BaseLayout>
+
+<style>
+  .log {
+    padding-block: var(--s-12) var(--section-y);
+  }
+  .log__list {
+    list-style: none;
+    padding: 0;
+    max-width: 52rem;
+  }
+  .log__entry {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-8) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .log__entry:first-child {
+    padding-top: 0;
+  }
+  time {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+  .log__entry:first-child time {
+    color: var(--accent-text);
+  }
+  h2 {
+    font-size: 1.375rem;
+    margin-bottom: var(--s-3);
+  }
+  ul {
+    padding-left: 1.2em;
+    display: grid;
+    gap: var(--s-2);
+  }
+  li::marker {
+    color: var(--text-muted);
+  }
+  @media (min-width: 760px) {
+    .log__entry {
+      grid-template-columns: 10rem 1fr;
+      gap: var(--s-8);
+    }
+  }
+</style>

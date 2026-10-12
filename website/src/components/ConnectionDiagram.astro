@@ -1,0 +1,226 @@
+---
+import Icon from './Icon.astro';
+const points = [
+  { icon: 'user-x', title: 'No Sidekick account', text: 'There is nothing to sign up for or sign in to.' },
+  { icon: 'server-off', title: 'No relay server', text: 'The phone and Mac connect to each other directly. No Sidekick server sits between them.' },
+  { icon: 'lock', title: 'Encrypted with TLS 1.3', text: 'Every connection between the two apps is encrypted. There is no unencrypted fallback.' },
+  { icon: 'key-round', title: 'Trust set by pairing', text: 'Scanning the code exchanges keys. Afterwards each side only talks to the device it paired with.' },
+  { icon: 'sliders-horizontal', title: 'Permissions per feature', text: 'Notifications, messages, calls, photos and mirroring each need your say-so, and each can be turned off.' },
+  { icon: 'eye-off', title: 'No analytics in the apps', text: 'Neither app includes analytics, advertising or crash-reporting services.' },
+];
+---
+<section id="privacy" class="section section--rule conn" aria-labelledby="conn-title">
+  <div class="container">
+    <div class="conn__head">
+      <p class="eyebrow">Connection model</p>
+      <h2 id="conn-title">Your devices talk directly.</h2>
+      <p class="lede">What moves between your phone and your Mac stays on the network you’re both on. Here’s exactly how.</p>
+    </div>
+
+    <figure class="conn__diagram">
+      <svg viewBox="0 0 960 200" role="img" aria-labelledby="conn-svg-title conn-svg-desc" class="conn__svg">
+        <title id="conn-svg-title">Connection diagram</title>
+        <desc id="conn-svg-desc">An Android phone and a Mac connect to each other over your local Wi-Fi network or the phone’s hotspot, using an encrypted TLS 1.3 connection. There is no cloud relay in between.</desc>
+        <defs>
+          <marker id="conn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#c6ff33" />
+          </marker>
+        </defs>
+        <!-- phone -->
+        <g transform="translate(40 30)">
+          <rect x="0" y="0" width="84" height="140" rx="16" fill="#161616" stroke="rgba(255,255,255,.18)" />
+          <rect x="34" y="10" width="16" height="4" rx="2" fill="rgba(255,255,255,.25)" />
+          <text x="42" y="168" text-anchor="middle" class="conn__lbl">Android phone</text>
+        </g>
+        <!-- network band -->
+        <rect x="200" y="58" width="560" height="84" rx="12" fill="rgba(198,255,51,.04)" stroke="rgba(198,255,51,.28)" stroke-dasharray="4 5" />
+        <text x="480" y="48" text-anchor="middle" class="conn__lbl conn__lbl--muted">Your Wi-Fi network or the phone’s hotspot</text>
+        <line x1="138" y1="100" x2="822" y2="100" stroke="#c6ff33" stroke-width="1.5" marker-start="url(#conn-arrow)" marker-end="url(#conn-arrow)" class="conn__line" />
+        <rect x="392" y="84" width="176" height="32" rx="16" fill="#0a0a0a" stroke="rgba(255,255,255,.16)" />
+        <text x="480" y="105" text-anchor="middle" class="conn__lbl conn__lbl--mono">TLS 1.3 · paired keys</text>
+        <!-- mac -->
+        <g transform="translate(836 46)">
+          <rect x="0" y="0" width="100" height="70" rx="8" fill="#161616" stroke="rgba(255,255,255,.18)" />
+          <path d="M-10 78 h120 l-8 8 h-104 z" fill="#1c1c1c" stroke="rgba(255,255,255,.18)" />
+          <text x="50" y="114" text-anchor="middle" class="conn__lbl">Mac</text>
+        </g>
+        <!-- no relay -->
+        <g transform="translate(480 172)">
+          <text x="0" y="0" text-anchor="middle" class="conn__lbl conn__lbl--muted">No Sidekick server in this path</text>
+        </g>
+      </svg>
+      <div class="conn__stack" role="img" aria-label="An Android phone and a Mac connect to each other over your local Wi-Fi network or the phone’s hotspot, using an encrypted TLS 1.3 connection. There is no Sidekick server in between.">
+        <div class="conn__node"><Icon name="smartphone" size={22} />Android phone</div>
+        <div class="conn__wire"><span class="mono">TLS 1.3 · paired keys</span></div>
+        <div class="conn__node"><Icon name="laptop" size={22} />Mac</div>
+        <p class="conn__net">Inside your Wi-Fi network or the phone’s hotspot. No Sidekick server in this path.</p>
+      </div>
+    </figure>
+
+    <ul class="conn__points">
+      {
+        points.map((p) => (
+          <li>
+            <Icon name={p.icon} size={20} />
+            <div>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="conn__scope">
+      <p><strong>What this covers.</strong> These points describe the connection between the two apps. This website, the beta request form and any future licensing or payments are separate services with their own handling — each is described on the <a class="text-link" href="/privacy">privacy page</a>. The beta access token is checked on your Mac without contacting a server.</p>
+      <div class="conn__links">
+        <a class="arrow-link" href="/privacy"><span>Privacy in detail</span><Icon name="arrow-right" size={16} /></a>
+        <a class="arrow-link" href="/permissions"><span>Every permission, explained</span><Icon name="arrow-right" size={16} /></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .conn__head {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 44rem;
+  }
+  .conn__head h2 {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  .conn__diagram {
+    margin-block: var(--s-12);
+    padding: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--bg-chrome);
+  }
+  .conn__svg {
+    width: 100%;
+    height: auto;
+  }
+  .conn__lbl {
+    fill: #f2f3f5;
+    font: 500 15px var(--font-sans);
+  }
+  .conn__lbl--muted {
+    fill: #9a9ca8;
+    font-size: 14px;
+  }
+  .conn__lbl--mono {
+    font: 500 13px var(--font-mono);
+    fill: #d8ff70;
+  }
+  .conn__points {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-8) var(--s-10);
+  }
+  .conn__points li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-4);
+  }
+  .conn__points :global(svg) {
+    color: var(--text);
+    margin-top: 0.15em;
+  }
+  .conn__points h3 {
+    font-size: 1.0625rem;
+    margin-bottom: var(--s-1);
+  }
+  .conn__points p {
+    font-size: var(--fs-sm);
+  }
+  .conn__scope {
+    margin-top: var(--s-12);
+    padding-top: var(--s-8);
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: var(--s-4);
+    max-width: 52rem;
+    font-size: var(--fs-sm);
+  }
+  .conn__scope strong {
+    color: var(--text);
+  }
+  .conn__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-8);
+  }
+  @media (min-width: 680px) {
+    .conn__points {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1040px) {
+    .conn__points {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .conn__stack {
+    display: none;
+  }
+  @media (max-width: 639.98px) {
+    .conn__svg {
+      display: none;
+    }
+    .conn__stack {
+      display: grid;
+      justify-items: center;
+      gap: 0;
+      padding: var(--s-6) var(--s-4);
+      border: 1px dashed rgb(198 255 51 / 0.3);
+      border-radius: var(--r-md);
+      background: rgb(198 255 51 / 0.03);
+    }
+    .conn__node {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      padding: var(--s-3) var(--s-5);
+      border-radius: var(--r-md);
+      border: 1px solid var(--line-strong);
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 550;
+    }
+    .conn__wire {
+      position: relative;
+      height: 88px;
+      width: 100%;
+      display: grid;
+      place-items: center;
+    }
+    .conn__wire::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1.5px;
+      background: var(--accent);
+    }
+    .conn__wire span {
+      position: relative;
+      font-size: var(--fs-xs);
+      color: var(--accent-text);
+      background: var(--bg);
+      border: 1px solid var(--line-strong);
+      border-radius: 99px;
+      padding: 0.3em 0.9em;
+    }
+    .conn__net {
+      margin-top: var(--s-5);
+      text-align: center;
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+    }
+  }
+</style>

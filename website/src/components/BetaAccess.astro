@@ -1,0 +1,108 @@
+---
+import Icon from './Icon.astro';
+import BetaRequestForm from './BetaRequestForm.astro';
+import { site } from '../config/site';
+interface Props {
+  headingLevel?: 'h1' | 'h2';
+  showForm?: boolean;
+}
+const { headingLevel = 'h2', showForm = true } = Astro.props;
+const H = headingLevel;
+---
+<section id="beta" class="section section--rule beta" aria-labelledby="beta-title">
+  <div class="container beta__grid">
+    <div class="beta__info">
+      <p class="eyebrow">{site.betaAccessDuration ? `${site.betaAccessDuration.days}-day invited beta access` : 'Invited beta'}</p>
+      <H id="beta-title">A small beta, for people who’ll tell us what breaks.</H>
+      <p class="lede">Sidekick is in an early, invite-only beta. It’s a good fit if you use an Android phone and a Mac every day and don’t mind reporting what you see, word for word.</p>
+
+      <dl class="beta__facts">
+        <div>
+          <dt><Icon name="flask-conical" size={18} />Build</dt>
+          <dd>Version {site.currentBuild.version} — {site.currentBuild.status.charAt(0).toLowerCase() + site.currentBuild.status.slice(1)} macOS and Android will both warn you before opening it; the setup guide walks you through each warning.</dd>
+        </div>
+        <div>
+          <dt><Icon name="key-round" size={18} />Access</dt>
+          <dd>{site.betaAccessDescription}</dd>
+        </div>
+        <div>
+          <dt><Icon name="message-square" size={18} />Feedback that helps most</dt>
+          <dd>What you did, what you expected, the exact words on screen, when it happened, and your Mac and phone models. Phones beyond the ones we’ve tested, and Intel Macs, are especially useful.</dd>
+        </div>
+        <div>
+          <dt><Icon name="check" size={18} />Leaving</dt>
+          <dd>Uninstall either app at any time. When access ends, nothing on your devices is deleted.</dd>
+        </div>
+      </dl>
+    </div>
+    {showForm && (
+      <div class="beta__form">
+        <h3 class="beta__form-title">Request access</h3>
+        <BetaRequestForm />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .beta__grid {
+    display: grid;
+    gap: var(--s-12);
+  }
+  .beta__info {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+  .beta__info :is(h1, h2) {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    max-width: 18ch;
+  }
+  .beta__facts {
+    margin-top: var(--s-4);
+    border-top: 1px solid var(--line);
+  }
+  .beta__facts > div {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-5) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .beta__facts dt {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    color: var(--text);
+    font-weight: 550;
+    font-size: var(--fs-sm);
+  }
+  .beta__facts dt :global(svg) {
+    color: var(--text-muted);
+  }
+  .beta__facts dd {
+    font-size: var(--fs-sm);
+  }
+  .beta__form {
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    align-self: start;
+  }
+  .beta__form-title {
+    font-size: 1.375rem;
+    margin-bottom: var(--s-5);
+  }
+  @media (min-width: 1040px) {
+    .beta__grid {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      gap: var(--s-16);
+    }
+    .beta__form {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+</style>

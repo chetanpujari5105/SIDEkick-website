@@ -1,0 +1,108 @@
+---
+import Icon from './Icon.astro';
+import { roadmap } from '../content/roadmap';
+---
+<section id="next" class="section section--rule rm" aria-labelledby="rm-title">
+  <div class="container">
+    <div class="rm__head">
+      <p class="eyebrow">What’s next</p>
+      <h2 id="rm-title">Where Sidekick goes from here.</h2>
+      <p class="lede">The direction, in order. There are no dates, because there’s no honest way to give them yet — and the items under <em>Exploring</em> may not ship at all.</p>
+    </div>
+    <ol class="rm__cols">
+      {
+        roadmap.map((g, i) => (
+          <li class:list={['rm__col', `rm__col--${g.id}`]}>
+            <p class="rm__step mono">{String(i + 1).padStart(2, '0')}</p>
+            <h3>{g.label}</h3>
+            <ul>
+              {g.items.slice(0, 4).map((it) => (
+                <li>{it.title}</li>
+              ))}
+              {g.items.length > 4 && <li class="rm__more">+ {g.items.length - 4} more</li>}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
+    <a class="arrow-link" href="/roadmap"><span>The full roadmap</span><Icon name="arrow-right" size={16} /></a>
+  </div>
+</section>
+
+<style>
+  .rm__head {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 46rem;
+    margin-bottom: var(--s-12);
+  }
+  .rm__head h2 {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  .rm__head em {
+    color: var(--text);
+    font-style: normal;
+  }
+  .rm__cols {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-10);
+    margin-bottom: var(--s-8);
+  }
+  .rm__col {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line-strong);
+  }
+  .rm__col--now {
+    border-top-color: var(--accent);
+  }
+  .rm__step {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .rm__col--now .rm__step {
+    color: var(--accent-text);
+  }
+  .rm__col h3 {
+    font-size: 1.1875rem;
+    letter-spacing: -0.015em;
+  }
+  .rm__col ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-2);
+    font-size: var(--fs-sm);
+  }
+  .rm__col ul li {
+    padding-left: 1em;
+    position: relative;
+  }
+  .rm__col ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 5px;
+    height: 1px;
+    background: var(--text-muted);
+  }
+  .rm__more {
+    color: var(--text-muted);
+  }
+  .rm__col--exploring {
+    color: var(--text-muted);
+  }
+  @media (min-width: 900px) {
+    .rm__cols {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--s-8);
+    }
+  }
+</style>

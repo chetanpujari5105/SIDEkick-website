@@ -1,0 +1,80 @@
+---
+import Icon from '../Icon.astro';
+import MacWindow from './MacWindow.astro';
+interface Props { class?: string }
+---
+<MacWindow active="clipboard" title="Clipboard" subtitle="Kept in memory while connected" class={Astro.props.class}>
+  <div class="cp">
+    <div class="cp__list">
+      <div class="ui-card ui-card--raised cp__offer">
+        <div class="ui-row"><span class="ui-pill ui-pill--accent">Phone → Mac</span><span class="ui-m">just now</span></div>
+        <div class="ui-b">“Gate 14, Terminal 2 — boarding 18:40”</div>
+        <div class="ui-row"><span class="ui-btn ui-btn--accent"><Icon name="copy" />Copy</span><span class="ui-btn">Dismiss</span></div>
+      </div>
+      <div class="cp__item"><span class="ui-pill">Mac → phone</span><span class="ui-b ui-grow ui-ellipsis">Order ref. 7Q-2281</span><span class="ui-m">2 min</span></div>
+      <div class="cp__item"><span class="ui-pill">Mac → phone</span><span class="ui-b ui-grow ui-ellipsis">example.com/agenda</span><span class="ui-m">9 min</span></div>
+    </div>
+    <div class="ui-card cp__media">
+      <div class="ui-m">Now playing on your phone</div>
+      <div class="cp__art"></div>
+      <div class="ui-h ui-ellipsis">Episode 42 · Field notes</div>
+      <div class="ui-m ui-ellipsis">Podcast app</div>
+      <div class="cp__transport"><span class="ui-btn"><Icon name="skip-forward" class="cp__flip" /></span><span class="ui-btn ui-btn--accent"><Icon name="pause" /></span><span class="ui-btn"><Icon name="skip-forward" /></span></div>
+    </div>
+  </div>
+</MacWindow>
+
+<style>
+  .cp {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1.35fr 0.85fr;
+    gap: 1.2em;
+  }
+  .cp__list {
+    display: grid;
+    align-content: start;
+    gap: 0.6em;
+  }
+  .cp__offer {
+    display: grid;
+    gap: 0.9em;
+    border-color: rgb(198 255 51 / 0.3);
+  }
+  .cp__offer .ui-row {
+    gap: 0.6em;
+  }
+  .cp__item {
+    display: flex;
+    gap: 0.9em;
+    align-items: center;
+    padding: 0.9em 1em;
+    border-bottom: 1px solid rgb(255 255 255 / 0.06);
+    min-width: 0;
+  }
+  .cp__media {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+  }
+  .cp__art {
+    aspect-ratio: 1;
+    border-radius: 0.9em;
+    background: linear-gradient(140deg, #2a2c31, #1a1b1e 60%), #1a1a1a;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    margin-block: 0.4em;
+  }
+  .cp__transport {
+    display: flex;
+    justify-content: center;
+    gap: 0.6em;
+    margin-top: auto;
+  }
+  .cp__transport :global(.ui-btn) {
+    padding: 0 0.9em;
+  }
+  .cp__transport :global(.cp__flip) {
+    transform: scaleX(-1);
+  }
+</style>

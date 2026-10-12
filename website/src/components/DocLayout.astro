@@ -1,0 +1,82 @@
+---
+/* Two-column reading layout for supporting pages: a sticky in-page index and a prose column. */
+interface Props {
+  toc?: { id: string; label: string }[];
+}
+const { toc = [] } = Astro.props;
+---
+<div class="container doc">
+  {toc.length > 0 && (
+    <nav class="doc__toc" aria-label="On this page">
+      <p class="doc__toc-title mono">On this page</p>
+      <ul>
+        {toc.map((t) => (
+          <li><a href={`#${t.id}`}>{t.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  )}
+  <div class="doc__body prose">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .doc {
+    display: grid;
+    gap: var(--s-10);
+    padding-block: var(--s-12) var(--section-y);
+  }
+  .doc__toc {
+    font-size: var(--fs-sm);
+  }
+  .doc__toc-title {
+    color: var(--text-muted);
+    font-size: var(--fs-xs);
+    margin-bottom: var(--s-2);
+  }
+  .doc__toc ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s-5);
+  }
+  .doc__toc a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    color: var(--text-body);
+    text-decoration: none;
+  }
+  .doc__toc a:hover {
+    color: var(--text);
+  }
+  .doc__body > :global(h2:first-child) {
+    margin-top: 0;
+  }
+  @media (min-width: 1040px) {
+    .doc {
+      grid-template-columns: 14rem minmax(0, 1fr);
+      gap: var(--s-16);
+    }
+    .doc__toc {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      align-self: start;
+    }
+    .doc__toc ul {
+      display: grid;
+      border-left: 1px solid var(--line);
+    }
+    .doc__toc a {
+      min-height: 36px;
+      padding-left: var(--s-4);
+      margin-left: -1px;
+      border-left: 1px solid transparent;
+    }
+    .doc__toc a:hover {
+      border-left-color: var(--accent-line);
+    }
+  }
+</style>

@@ -1,0 +1,267 @@
+---
+import Icon from './Icon.astro';
+import PhoneFrame from './illustrations/PhoneFrame.astro';
+import { site } from '../config/site';
+---
+<section id="how-it-works" class="section section--rule how" aria-labelledby="how-title">
+  <div class="container how__grid">
+    <div class="how__main">
+      <p class="eyebrow">How it works</p>
+      <h2 id="how-title">Two apps. One local connection.</h2>
+      <p class="lede">Sidekick is a pair: an app on your Mac and an app on your Android phone. You introduce them once; after that they find each other on their own.</p>
+
+      <ol class="how__steps">
+        <li>
+          <span class="how__n mono" aria-hidden="true">01</span>
+          <div>
+            <h3>Install both apps</h3>
+            <p>Sidekick for Mac ({site.minimumRequirements.mac}) and Sidekick for Android ({site.minimumRequirements.android}). During the beta, both come from the invitation you receive.</p>
+          </div>
+        </li>
+        <li>
+          <span class="how__n mono" aria-hidden="true">02</span>
+          <div>
+            <h3>Put them on the same network and pair</h3>
+            <p>Use the same Wi-Fi, or join your Mac to your phone’s hotspot. The Mac shows a code; on the phone tap <strong>Connect your Mac → Scan the code</strong>. The phone says <em>Paired with</em> your Mac, and the Mac shows your phone as <em>Connected</em>.</p>
+          </div>
+        </li>
+        <li>
+          <span class="how__n mono" aria-hidden="true">03</span>
+          <div>
+            <h3>Turn on what you want to use</h3>
+            <p>Each feature asks for its own permission the first time you use it — notifications, messages, calls, photos, screen mirroring. Skip any you don’t need; the rest keep working.</p>
+          </div>
+        </li>
+      </ol>
+
+      <ul class="how__notes">
+        <li><Icon name="wifi" size={18} /><span>Both devices must be on the same local network. Sidekick doesn’t work across the internet.</span></li>
+        <li><Icon name="monitor-smartphone" size={18} /><span>Starting mirroring asks for permission on the phone every time — that’s Android’s rule.</span></li>
+        <li><Icon name="refresh-cw" size={18} /><span>After pairing, the two reconnect by themselves after sleep or a network change.</span></li>
+      </ul>
+      <a class="arrow-link" href="/setup"><span>Full setup guide</span><Icon name="arrow-right" size={16} /></a>
+    </div>
+
+    <figure class="how__visual">
+      <div class="how__pair" role="img" aria-label="Illustration: a Mac window showing a pairing code, and a phone camera view scanning it. The code is a non-functional pattern.">
+        <div class="how__mac">
+          <div class="how__mac-bar"><i></i><i></i><i></i></div>
+          <div class="how__mac-body">
+            <div class="how__mac-title">Scan this with your phone</div>
+            <div class="how__qr" aria-hidden="true">
+              <svg viewBox="0 0 21 21" shape-rendering="crispEdges">
+                <rect width="21" height="21" fill="#f2f3f5" />
+                <g fill="#0a0a0a">
+                  <path d="M1 1h7v7H1zM13 1h7v7h-7zM1 13h7v7H1z" />
+                </g>
+                <g fill="#f2f3f5"><path d="M2 2h5v5H2zM14 2h5v5h-5zM2 14h5v5H2z" /></g>
+                <g fill="#0a0a0a">
+                  <path d="M3 3h3v3H3zM15 3h3v3h-3zM3 15h3v3H3z" />
+                  <path d="M10 1h1v2h-1zM9 4h2v1H9zM10 6h1v3h-1zM12 9h2v1h-2zM9 10h1v2H9zM15 9h1v1h-1zM17 10h3v1h-3zM11 12h2v1h-2zM13 13h1v3h-1zM15 12h2v2h-2zM18 13h1v2h-1zM10 14h2v1h-2zM9 16h1v3H9zM11 17h2v1h-2zM15 16h3v1h-3zM16 18h1v2h-1zM18 18h2v2h-2zM1 9h2v1H1zM4 10h3v1H4zM6 9h1v1H6zM11 19h1v1h-1z" />
+                </g>
+              </svg>
+              <span class="how__qr-tag mono">sample only</span>
+            </div>
+            <div class="how__mac-meta mono">Waiting for your phone…</div>
+          </div>
+        </div>
+        <div class="how__phone">
+          <PhoneFrame>
+            <div class="how__scan">
+              <div class="how__scan-frame"><span></span></div>
+              <div class="ui-h">Point at the code on your Mac</div>
+              <div class="ui-m">The camera is only used to read the code, on the phone.</div>
+            </div>
+          </PhoneFrame>
+        </div>
+      </div>
+      <figcaption class="illus-label">Illustration · the code shown is a non-working pattern</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .how__grid {
+    display: grid;
+    gap: var(--s-12);
+    align-items: start;
+  }
+  .how__main {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .how__main h2 {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  .how__steps {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    margin-top: var(--s-4);
+    border-top: 1px solid var(--line);
+  }
+  .how__steps li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: var(--s-4);
+    padding: var(--s-6) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .how__n {
+    color: var(--accent-text);
+    font-size: var(--fs-sm);
+    padding-top: 0.2em;
+  }
+  .how__steps h3 {
+    font-size: 1.25rem;
+    margin-bottom: var(--s-2);
+  }
+  .how__steps strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .how__notes {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-3);
+    font-size: var(--fs-sm);
+  }
+  .how__notes li {
+    display: flex;
+    gap: var(--s-3);
+    align-items: flex-start;
+  }
+  .how__notes :global(svg) {
+    flex: none;
+    color: var(--text-muted);
+    margin-top: 0.15em;
+  }
+
+  .how__visual {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .how__pair {
+    position: relative;
+    padding: 0 0 18% 0;
+    container-type: inline-size;
+  }
+  .how__mac {
+    width: 78%;
+    border-radius: var(--r-window);
+    background: var(--bg);
+    box-shadow: var(--shadow-window);
+    overflow: hidden;
+    font-size: calc(100cqi / 48);
+  }
+  .how__mac-bar {
+    display: flex;
+    gap: 0.6em;
+    padding: 1em 1.2em;
+    background: var(--bg-chrome);
+    border-bottom: 1px solid var(--line);
+  }
+  .how__mac-bar i {
+    width: 0.9em;
+    height: 0.9em;
+    border-radius: 50%;
+    background: #3a3a3c;
+  }
+  .how__mac-body {
+    display: grid;
+    justify-items: center;
+    gap: 1.4em;
+    padding: 2.4em 2em 2.8em;
+  }
+  .how__mac-title {
+    font-size: 1.7em;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .how__qr {
+    position: relative;
+    width: 46%;
+    padding: 0.8em;
+    background: #f2f3f5;
+    border-radius: 0.8em;
+  }
+  .how__qr svg {
+    width: 100%;
+    height: auto;
+  }
+  .how__qr-tag {
+    position: absolute;
+    left: 50%;
+    bottom: -0.9em;
+    transform: translateX(-50%);
+    font-size: 0.9em;
+    padding: 0.2em 0.7em;
+    border-radius: 99em;
+    background: var(--surface-raised);
+    color: var(--text-muted);
+    border: 1px solid var(--line-strong);
+    white-space: nowrap;
+  }
+  .how__mac-meta {
+    font-size: 1.05em;
+    color: var(--text-muted);
+  }
+  .how__phone {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 36%;
+  }
+  .how__scan {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    text-align: center;
+    justify-content: center;
+  }
+  .how__scan-frame {
+    position: relative;
+    aspect-ratio: 1;
+    margin: 0 10% 1em;
+    border-radius: 1.6em;
+    background: #141414;
+    border: 2px solid rgb(198 255 51 / 0.6);
+    overflow: hidden;
+  }
+  .how__scan-frame span {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 50%;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0.8;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .how__scan-frame span {
+      animation: scan 2.4s var(--ease-in-out) 3 alternate;
+    }
+  }
+  @keyframes scan {
+    from {
+      top: 18%;
+    }
+    to {
+      top: 82%;
+    }
+  }
+  @media (min-width: 1040px) {
+    .how__grid {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      gap: var(--s-16);
+    }
+    .how__visual {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+</style>

@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { roadmap } from '../content/roadmap';
+---
+<BaseLayout title="What’s next" description="Sidekick’s roadmap: reliability first, then everyday improvements, then larger projects we’re exploring. No dates, no promises." path="/roadmap">
+  <PageHeader eyebrow="Roadmap" title="Where Sidekick goes from here." lede="In order of priority. No dates — there isn’t an honest basis for them yet — and nothing under Exploring is promised.">
+    <p class="rmp__note">Not planned: iPhone, iPad or Windows versions, and connecting over the internet.</p>
+  </PageHeader>
+  <div class="container rmp">
+    {roadmap.map((g, i) => (
+      <section class:list={['rmp__group', `rmp__group--${g.id}`]} aria-labelledby={`rm-${g.id}`}>
+        <div class="rmp__side">
+          <p class="mono rmp__n">{String(i + 1).padStart(2, '0')}</p>
+          <h2 id={`rm-${g.id}`}>{g.label}</h2>
+          <p>{g.summary}</p>
+        </div>
+        <ul class="rmp__items">
+          {g.items.map((it) => (
+            <li>
+              <h3>{it.title}</h3>
+              <p>{it.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .rmp__note {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .rmp {
+    padding-block: var(--s-8) var(--section-y);
+  }
+  .rmp__group {
+    display: grid;
+    gap: var(--s-6);
+    padding-block: var(--s-12);
+    border-bottom: 1px solid var(--line);
+  }
+  .rmp__side {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+  }
+  .rmp__n {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .rmp__group--now .rmp__n {
+    color: var(--accent-text);
+  }
+  .rmp__side h2 {
+    font-size: var(--fs-h3);
+  }
+  .rmp__side p:last-child {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .rmp__items {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-6) var(--s-8);
+  }
+  .rmp__items h3 {
+    font-size: 1.0625rem;
+    margin-bottom: var(--s-1);
+  }
+  .rmp__items p {
+    font-size: var(--fs-sm);
+  }
+  @media (min-width: 720px) {
+    .rmp__items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1040px) {
+    .rmp__group {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: var(--s-16);
+    }
+  }
+</style>

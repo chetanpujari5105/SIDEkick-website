@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Walkthrough from '../components/Walkthrough.astro';
+import WorkflowShowcase from '../components/WorkflowShowcase.astro';
+import Stories from '../components/Stories.astro';
+import SetupSteps from '../components/SetupSteps.astro';
+import ConnectionDiagram from '../components/ConnectionDiagram.astro';
+import CompatibilitySummary from '../components/CompatibilitySummary.astro';
+import RoadmapPreview from '../components/RoadmapPreview.astro';
+import BetaAccess from '../components/BetaAccess.astro';
+import FAQ from '../components/FAQ.astro';
+import FinalCta from '../components/FinalCta.astro';
+import DemoDialog from '../components/DemoDialog.astro';
+import { faq } from '../content/faq';
+import { site } from '../config/site';
+---
+<BaseLayout
+  title="Your Android, right beside your Mac"
+  description="Sidekick connects your Android phone and your Mac directly over your own network: mirror and control the screen, reply to notifications and texts, move files and share the clipboard. Invited beta."
+  path="/"
+>
+  <Hero />
+  <Walkthrough />
+  <WorkflowShowcase />
+  <Stories />
+  <SetupSteps />
+  <ConnectionDiagram />
+  <CompatibilitySummary />
+  <RoadmapPreview />
+  <BetaAccess />
+  <FAQ items={faq} />
+  <FinalCta />
+  {site.demoVideo && <DemoDialog video={site.demoVideo} />}
+</BaseLayout>

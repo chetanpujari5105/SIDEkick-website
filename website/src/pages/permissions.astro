@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import DocLayout from '../components/DocLayout.astro';
+import { androidPermissions, macPermissions } from '../content/permissions';
+---
+<BaseLayout title="Permissions" description="Every permission Sidekick asks for on Android and macOS, what it’s used for, and what happens if you say no." path="/permissions">
+  <PageHeader eyebrow="Permissions" title="Every permission, and what it’s for." lede="Sidekick asks for each permission when you turn on the feature that needs it. Say no to any of them and the rest of Sidekick keeps working." />
+  <DocLayout toc={[{ id: 'android', label: 'Android' }, { id: 'mac', label: 'Mac' }, { id: 'revoking', label: 'Changing your mind' }]}>
+    <h2 id="android">Android</h2>
+    <p>Grouped by feature. The system names are included for anyone who wants to check them against the app’s manifest.</p>
+    <div class="perm-list">
+      {androidPermissions.map((g) => (
+        <section class="perm" id={g.id} aria-labelledby={`${g.id}-h`}>
+          <h3 id={`${g.id}-h`}>{g.feature}</h3>
+          <dl class="perm__meta">
+            <div><dt>When</dt><dd>{g.when}</dd></div>
+            <div><dt>If you say no</dt><dd>{g.without}</dd></div>
+          </dl>
+          <ul class="perm__items">
+            {g.perms.map((p) => (
+              <li><p class="perm__name mono">{p.name}</p><p>{p.why}</p></li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+
+    <h2 id="mac">Mac</h2>
+    <ul class="perm__items">
+      {macPermissions.map((p) => (
+        <li><p class="perm__name">{p.name}</p><p>{p.why}</p></li>
+      ))}
+    </ul>
+
+    <h2 id="revoking">Changing your mind</h2>
+    <p>Revoke any Android permission in <strong>Settings → Apps → Sidekick → Permissions</strong>, or the notification-access and accessibility screens. The feature that needed it stops, and Sidekick says why. On the Mac, use <strong>System Settings → Privacy &amp; Security</strong> and <strong>Notifications</strong>.</p>
+    <p>For what moves between your devices and what’s stored, see <a href="/privacy">Privacy</a>.</p>
+  </DocLayout>
+</BaseLayout>
+
+<style>
+  .perm-list {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line);
+    margin-top: var(--s-6) !important;
+  }
+  .perm {
+    padding: var(--s-6) 0;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    gap: var(--s-3);
+    scroll-margin-top: calc(var(--header-h) + 16px);
+  }
+  .perm h3 {
+    margin: 0 !important;
+    font-size: 1.1875rem;
+  }
+  .perm__meta {
+    display: grid;
+    gap: var(--s-2);
+    font-size: var(--fs-sm);
+  }
+  .perm__meta div {
+    display: grid;
+    gap: var(--s-1);
+  }
+  .perm__meta dt {
+    color: var(--text-muted);
+    font-size: var(--fs-xs);
+  }
+  .perm__items {
+    list-style: none;
+    padding: 0 !important;
+    display: grid;
+    gap: var(--s-3);
+  }
+  .perm__items li {
+    margin: 0 !important;
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font-size: var(--fs-sm);
+  }
+  .perm__name {
+    color: var(--text);
+    font-size: var(--fs-xs);
+    overflow-wrap: anywhere;
+    margin-bottom: var(--s-1);
+  }
+  @media (min-width: 640px) {
+    .perm__meta {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-6);
+    }
+  }
+</style>

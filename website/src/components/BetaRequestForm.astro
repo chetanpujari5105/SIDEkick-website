@@ -1,0 +1,321 @@
+---
+import PrimaryButton from './PrimaryButton.astro';
+import Icon from './Icon.astro';
+import { site } from '../config/site';
+const endpoint = site.betaFormEndpoint;
+const host = endpoint ? new URL(endpoint).host : null;
+const disabled = !endpoint;
+---
+<form
+  class="beta-form"
+  method="post"
+  action={endpoint ?? undefined}
+  novalidate
+  data-beta-form
+  data-endpoint={endpoint ?? ''}
+  aria-describedby="beta-form-status-note"
+>
+  {
+    disabled ? (
+      <div class="beta-form__notice" id="beta-form-status-note" role="note">
+        <Icon name="circle-alert" size={20} />
+        <div>
+          <p><strong>Requests aren’t open on this page yet.</strong></p>
+          <p>A destination for beta requests hasn’t been approved, so this form is switched off and nothing you could type here would be sent anywhere. If you were pointed here by someone running the beta, reply to them directly.</p>
+        </div>
+      </div>
+    ) : (
+      <p class="beta-form__dest" id="beta-form-status-note">
+        Your answers are sent to <span class="mono">{host}</span> and used only to run the beta.{' '}
+        <a class="text-link" href="/privacy#beta-form">How it’s handled</a>
+      </p>
+    )
+  }
+
+  <fieldset disabled={disabled}>
+    <legend class="visually-hidden">Beta access request</legend>
+
+    <div class="field">
+      <label for="bf-email">Email</label>
+      <input id="bf-email" name="email" type="email" autocomplete="email" required maxlength="254" aria-describedby="bf-email-err" />
+      <p class="field__err" id="bf-email-err" hidden></p>
+    </div>
+
+    <fieldset class="field field--group" aria-describedby="bf-mac-err">
+      <legend>Your Mac</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="mac" value="apple-silicon" required /><span>Apple silicon</span></label>
+        <label class="choice"><input type="radio" name="mac" value="intel" /><span>Intel</span></label>
+        <label class="choice"><input type="radio" name="mac" value="not-sure" /><span>Not sure</span></label>
+      </div>
+      <p class="field__hint">Apple menu → About This Mac shows “Chip: Apple M…” for Apple silicon.</p>
+      <p class="field__err" id="bf-mac-err" hidden></p>
+    </fieldset>
+
+    <div class="field">
+      <label for="bf-phone">Android phone model</label>
+      <input id="bf-phone" name="phone_model" type="text" required maxlength="120" autocomplete="off" placeholder="e.g. Galaxy S24, Pixel 8, moto g54" aria-describedby="bf-phone-hint bf-phone-err" />
+      <p class="field__hint" id="bf-phone-hint">Settings → About phone shows the model name.</p>
+      <p class="field__err" id="bf-phone-err" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="bf-wish">What would you most like Sidekick to do? <span class="field__opt">Optional</span></label>
+      <textarea id="bf-wish" name="wish" rows="4" maxlength="1000"></textarea>
+    </div>
+
+    <div class="field field--hp" aria-hidden="true">
+      <label for="bf-website">Leave this empty</label>
+      <input id="bf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="beta-form__actions">
+      <PrimaryButton type="submit" size="lg" icon="arrow-right" data-submit>
+        {disabled ? 'Requests not open yet' : 'Request beta access'}
+      </PrimaryButton>
+      <p class="field__hint">We don’t ask for your name, and nothing is shared with anyone else.</p>
+    </div>
+  </fieldset>
+
+  <div class="beta-form__result" role="status" aria-live="polite" data-result hidden></div>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-beta-form]');
+  const endpoint = form?.dataset.endpoint;
+  if (form && endpoint) {
+    const result = form.querySelector<HTMLElement>('[data-result]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const setErr = (id: string, msg: string | null, input?: HTMLElement | null) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.hidden = !msg;
+      el.textContent = msg ?? '';
+      input?.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    };
+    const validate = () => {
+      const email = form.querySelector<HTMLInputElement>('#bf-email')!;
+      const phone = form.querySelector<HTMLInputElement>('#bf-phone')!;
+      const mac = form.querySelector<HTMLInputElement>('input[name="mac"]:checked');
+      const errors: HTMLElement[] = [];
+      const emailMsg = !email.value.trim()
+        ? 'Enter your email address so we can send the invitation.'
+        : email.validity.typeMismatch
+          ? 'That email address doesn’t look complete — check for a missing @ or domain.'
+          : null;
+      setErr('bf-email-err', emailMsg, email);
+      if (emailMsg) errors.push(email);
+      const macMsg = mac ? null : 'Choose your Mac type, or “Not sure”.';
+      setErr('bf-mac-err', macMsg);
+      if (macMsg) errors.push(form.querySelector<HTMLElement>('input[name="mac"]')!);
+      const phoneMsg = phone.value.trim() ? null : 'Enter your phone’s model — it helps us cover different Android makers.';
+      setErr('bf-phone-err', phoneMsg, phone);
+      if (phoneMsg) errors.push(phone);
+      return errors;
+    };
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errors = validate();
+      if (errors.length) {
+        errors[0].focus();
+        return;
+      }
+      submit.disabled = true;
+      submit.setAttribute('aria-busy', 'true');
+      result.hidden = false;
+      result.className = 'beta-form__result';
+      result.textContent = 'Sending…';
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        result.classList.add('is-ok');
+        result.textContent = 'Request received. If there’s a place in the beta, you’ll get an email with both apps and a setup guide.';
+        form.querySelector('fieldset')!.disabled = true;
+      } catch {
+        result.classList.add('is-error');
+        result.textContent = 'Your request didn’t go through, and nothing was saved. Check your connection and try again.';
+        submit.disabled = false;
+      } finally {
+        submit.removeAttribute('aria-busy');
+      }
+    });
+  }
+</script>
+
+<style>
+  .beta-form {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .beta-form fieldset {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+    display: grid;
+    gap: var(--s-6);
+  }
+  .beta-form fieldset[disabled] {
+    opacity: 0.55;
+  }
+  .beta-form__notice {
+    display: flex;
+    gap: var(--s-3);
+    padding: var(--s-4) var(--s-5);
+    border-radius: var(--r-md);
+    border: 1px solid rgb(255 181 71 / 0.35);
+    background: var(--warning-tint);
+    font-size: var(--fs-sm);
+  }
+  .beta-form__notice :global(svg) {
+    color: var(--warning);
+    flex: none;
+    margin-top: 0.1em;
+  }
+  .beta-form__notice strong {
+    color: var(--text);
+  }
+  .beta-form__notice p + p {
+    margin-top: var(--s-1);
+  }
+  .beta-form__dest {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .field {
+    display: grid;
+    gap: var(--s-2);
+    min-width: 0;
+  }
+  .field > label,
+  .field--group > legend {
+    color: var(--text);
+    font-weight: 550;
+    font-size: var(--fs-sm);
+    padding: 0;
+  }
+  .field--group {
+    gap: var(--s-2) !important;
+  }
+  .field__opt {
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-left: var(--s-2);
+  }
+  .field input[type='email'],
+  .field input[type='text'],
+  .field textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line-control);
+    background: var(--surface-well);
+    color: var(--text);
+    transition: border-color var(--dur-fast);
+  }
+  .field textarea {
+    resize: vertical;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: #8a8c98;
+  }
+  .field input:hover,
+  .field textarea:hover {
+    border-color: rgb(255 255 255 / 0.32);
+  }
+  .field input:focus-visible,
+  .field textarea:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+  .field [aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+  .choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .choice {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    padding: 0 var(--s-4) 0 var(--s-3);
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line-control);
+    cursor: pointer;
+    color: var(--text);
+    font-size: var(--fs-sm);
+  }
+  .choice input {
+    accent-color: var(--accent);
+    width: 18px;
+    height: 18px;
+    margin: 0;
+  }
+  .choice:has(input:checked) {
+    border-color: var(--accent-line);
+    background: var(--accent-tint);
+  }
+  .choice:has(input:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .field__hint {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .field__err {
+    font-size: var(--fs-sm);
+    color: #ff9a9a;
+    display: flex;
+    gap: var(--s-2);
+  }
+  .field__err::before {
+    content: '!';
+    font-weight: 700;
+    width: 1.2em;
+    height: 1.2em;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--danger-tint);
+    font-size: 0.85em;
+    margin-top: 0.15em;
+  }
+  .field--hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .beta-form__actions {
+    display: grid;
+    gap: var(--s-3);
+    justify-items: start;
+  }
+  .beta-form__result {
+    padding: var(--s-4) var(--s-5);
+    border-radius: var(--r-md);
+    border: 1px solid var(--line-strong);
+    font-size: var(--fs-sm);
+    color: var(--text);
+  }
+  .beta-form__result.is-ok {
+    border-color: var(--accent-line);
+  }
+  .beta-form__result.is-error {
+    border-color: rgb(255 92 92 / 0.5);
+    background: var(--danger-tint);
+  }
+</style>

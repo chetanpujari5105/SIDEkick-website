@@ -1,0 +1,62 @@
+---
+import PrimaryButton from './PrimaryButton.astro';
+import { primaryCta } from '../config/site';
+---
+<section class="final" aria-labelledby="final-title">
+  <div class="container final__inner">
+    <h2 id="final-title">Leave the phone where it is.</h2>
+    <div class="final__actions">
+      <PrimaryButton href={primaryCta.href} size="lg" icon="arrow-right">{primaryCta.label}</PrimaryButton>
+      <PrimaryButton href="/setup" variant="ghost" size="lg">Read the setup guide</PrimaryButton>
+    </div>
+  </div>
+</section>
+
+<style>
+  .final {
+    border-top: 1px solid var(--line);
+    padding-block: clamp(4rem, 2rem + 6vw, 7rem);
+    position: relative;
+    overflow: hidden;
+  }
+  .final::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-line) 30%, var(--accent-line) 70%, transparent);
+    opacity: 0.35;
+  }
+  .final__inner {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-8);
+  }
+  .final h2 {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.035em;
+    background: var(--bg);
+    padding-right: var(--s-6);
+  }
+  .final__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    background: var(--bg);
+    padding-left: var(--s-6);
+  }
+  @media (max-width: 719.98px) {
+    .final::before {
+      display: none;
+    }
+    .final h2,
+    .final__actions {
+      padding: 0;
+    }
+  }
+</style>

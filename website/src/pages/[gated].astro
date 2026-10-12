@@ -1,0 +1,41 @@
+---
+/*
+ * /download and /pricing are prepared but only generated when configuration supports them:
+ *  - /download: releaseMode 'public' AND every link is a signed build (src/config/site.ts → publicDownloadLinks)
+ *  - /pricing:  site.pricing is set (a decided commercial model)
+ * With today's config neither page exists in the build.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PrimaryButton from '../components/PrimaryButton.astro';
+import { site, hasValidDownloads } from '../config/site';
+
+export const getStaticPaths = (() => {
+  const paths: { params: { gated: string } }[] = [];
+  if (hasValidDownloads) paths.push({ params: { gated: 'download' } });
+  if (site.pricing) paths.push({ params: { gated: 'pricing' } });
+  return paths;
+}) satisfies GetStaticPaths;
+
+const { gated } = Astro.params;
+---
+{gated === 'download' && (
+  <BaseLayout title="Download" description="Download Sidekick for Mac and Android." path="/download">
+    <PageHeader eyebrow="Download" title="Get Sidekick." lede="You need both apps. Install them, then follow the setup guide to pair." />
+    <div class="container" style="padding-block: 3rem 6rem; display: grid; gap: 1.5rem;">
+      {site.publicDownloadLinks.map((d) => (
+        <div>
+          <PrimaryButton href={d.href} icon="download">{d.label}</PrimaryButton>
+          <p class="muted">{d.platform}{d.sha256 && <> · SHA-256 <code>{d.sha256}</code></>}</p>
+        </div>
+      ))}
+      <p><a class="text-link" href="/setup">Setup guide</a></p>
+    </div>
+  </BaseLayout>
+)}
+{gated === 'pricing' && site.pricing && (
+  <BaseLayout title="Pricing" description="Sidekick pricing." path="/pricing">
+    <PageHeader eyebrow="Pricing" title="Pricing" lede={site.pricing.summary} />
+  </BaseLayout>
+)}

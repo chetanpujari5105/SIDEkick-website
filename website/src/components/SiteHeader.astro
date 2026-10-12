@@ -1,0 +1,280 @@
+---
+import Icon from './Icon.astro';
+import { primaryCta, statusLabel } from '../config/site';
+interface Props {
+  path: string;
+}
+const { path } = Astro.props;
+const links = [
+  { label: 'Features', href: '/#features' },
+  { label: 'How it works', href: '/#how-it-works' },
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Help', href: '/help' },
+];
+const isCurrent = (href: string) => !href.includes('#') && path === href;
+---
+<header class="site-header" data-header>
+  <div class="container site-header__bar">
+    <a class="brand" href="/">
+      <picture>
+        <source srcset="/mark-56.webp 2x, /mark-84.webp 3x" type="image/webp" />
+        <img src="/mark-56.png" srcset="/mark-56.png 2x, /mark-84.png 3x" width="60" height="28" alt="" />
+      </picture>
+      <span class="brand__word">Sidekick</span>
+      {statusLabel && <span class="brand__status">{statusLabel}</span>}
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-menu-toggle
+    >
+      <span class="menu-toggle__open"><Icon name="menu" size={22} /></span>
+      <span class="menu-toggle__close"><Icon name="x" size={22} /></span>
+      <span class="visually-hidden">Menu</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main" data-menu>
+      <ul class="site-nav__list">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="site-nav__cta" href={primaryCta.href} aria-current={path === primaryCta.href ? 'page' : undefined}>
+        {primaryCta.label}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  if (toggle && menu && header) {
+    const mq = window.matchMedia('(min-width: 880px)');
+    const setOpen = (open: boolean, returnFocus = false) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      header.classList.toggle('is-open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) menu.querySelector<HTMLElement>('a')?.focus();
+      else if (returnFocus) toggle.focus();
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && header.classList.contains('is-open')) setOpen(false, true);
+    });
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    // Keep keyboard focus inside the open menu panel on small screens.
+    header.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab' || !header.classList.contains('is-open')) return;
+      const items = [toggle, ...menu.querySelectorAll<HTMLElement>('a')];
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+    mq.addEventListener('change', () => setOpen(false));
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(10 10 10 / 0.86);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur-med) var(--ease-out), background-color var(--dur-med);
+  }
+  @supports (backdrop-filter: blur(1px)) {
+    .site-header {
+      background: rgb(10 10 10 / 0.72);
+      backdrop-filter: saturate(140%) blur(14px);
+    }
+  }
+  .site-header.is-scrolled {
+    border-bottom-color: var(--line);
+  }
+  .site-header__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-6);
+    min-height: var(--header-h);
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    text-decoration: none;
+    color: var(--text);
+    min-height: 44px;
+  }
+  .brand img {
+    width: 40px;
+    height: auto;
+  }
+  .brand__word {
+    font-weight: 620;
+    font-size: 1.0625rem;
+    letter-spacing: -0.02em;
+  }
+  .brand__status {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-left: 1px solid var(--line-strong);
+    padding-left: var(--s-3);
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--s-6);
+  }
+  .site-nav__list {
+    display: flex;
+    gap: var(--s-1);
+    list-style: none;
+    padding: 0;
+  }
+  .site-nav__list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--s-3);
+    color: var(--text-body);
+    text-decoration: none;
+    font-size: var(--fs-sm);
+    border-radius: var(--r-sm);
+    transition: color var(--dur-fast);
+  }
+  .site-nav__list a:hover,
+  .site-nav__list a[aria-current='page'] {
+    color: var(--text);
+  }
+  .site-nav__list a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 6px;
+  }
+  .site-nav__cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--accent);
+    color: var(--accent-on);
+    font-weight: 580;
+    font-size: var(--fs-sm);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color var(--dur-fast);
+  }
+  .site-nav__cta:hover {
+    background: var(--accent-hover);
+  }
+
+  .menu-toggle {
+    display: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--r-sm);
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--text);
+  }
+  .menu-toggle__close {
+    display: none;
+  }
+
+  @media (max-width: 879.98px) {
+    .brand__status {
+      display: none;
+    }
+    /* Without JS the links simply wrap beneath the logo. */
+    .site-header__bar {
+      flex-wrap: wrap;
+      padding-block: var(--s-2);
+    }
+    .site-nav {
+      width: 100%;
+      flex-wrap: wrap;
+      gap: var(--s-2);
+    }
+    .site-nav__list {
+      flex-wrap: wrap;
+    }
+    :global(.js) .site-header__bar {
+      flex-wrap: nowrap;
+      padding-block: 0;
+    }
+    :global(.js) .menu-toggle {
+      display: grid;
+    }
+    :global(.js) .site-nav {
+      display: none;
+    }
+    :global(.js) .site-header.is-open {
+      background: var(--bg);
+      backdrop-filter: none;
+    }
+    :global(.js) .is-open .site-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      position: fixed;
+      inset: var(--header-h) 0 0 0;
+      background: var(--bg);
+      padding: var(--s-6) var(--gutter) var(--s-10);
+      gap: var(--s-6);
+      overflow-y: auto;
+      border-top: 1px solid var(--line);
+    }
+    :global(.js) .is-open .site-nav__list {
+      flex-direction: column;
+      gap: 0;
+    }
+    :global(.js) .is-open .site-nav__list a {
+      font-size: 1.375rem;
+      color: var(--text);
+      min-height: 56px;
+      padding: 0;
+      width: 100%;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+    }
+    :global(.js) .is-open .site-nav__cta {
+      min-height: 52px;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    :global(.js) .is-open .menu-toggle__open {
+      display: none;
+    }
+    :global(.js) .is-open .menu-toggle__close {
+      display: block;
+    }
+  }
+</style>
