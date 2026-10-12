@@ -23,14 +23,15 @@ Needs Node 22.12 or newer.
 
 ```sh
 npm run check          # astro check (TypeScript + .astro diagnostics)
-npm run build && npm test          # static assertions over dist/ (routes, no private data, no banned claims, gating)
+npm run build && npm test          # static assertions over dist/ (routes, no private data, no banned claims,
+                                   # gating) + Code.gs unit tests against a stand-in for Apps Script
 npm run build && npm run test:browser
                        # Chromium: overflow at 360–1440px on every route, axe-core WCAG 2.2 AA rules,
                        # keyboard tabs, mobile menu + Escape, no-JS rendering, missing images, reduced motion.
                        # Set CHROMIUM_PATH if Chromium isn't at /opt/pw-browsers/chromium-1194/…
-npm run test:form      # builds into .form-test-dist/ with a localhost endpoint and a mock receiver, then
-                       # checks validation, focus, long input at 360px, HTTP 500, a dropped connection,
-                       # and that success appears only after a 2xx. Leaves dist/ untouched.
+npm run test:form      # builds into .form-test-dist/ with a localhost endpoint, then checks validation,
+                       # focus, long input at 360px, HTTP 500, a 200 that isn't {ok:true}, a dropped
+                       # connection, and a real submission stored by Code.gs. Leaves dist/ untouched.
 ```
 
 ## Routes
@@ -55,18 +56,23 @@ Everything that depends on a business decision lives in `src/config/site.ts`:
 |---|---|---|
 | `releaseMode` | `invited-beta` | Primary CTA, status label. `public` + signed `publicDownloadLinks` generates `/download` |
 | `betaAccessDuration` / `betaAccessDescription` | 45 days, from the token's start date | Shown with its meaning, never as a bare number |
-| `betaFormEndpoint` | `PUBLIC_BETA_FORM_ENDPOINT` env (https; plain http only for localhost, for tests) | Empty → no form is rendered at all, only a closed notice listing what the form will ask for |
+| `betaFormEndpoint` | `BETA_FORM_ENDPOINT` in `site.ts`, or `PUBLIC_BETA_FORM_ENDPOINT` env (https; plain http only for localhost, for tests) | Your Google Apps Script web-app URL — see `integrations/google-sheets/SETUP.md`. Empty → no form is rendered, only a closed notice listing what it will ask for |
+| `androidBetaDistribution` | `google-play-testing` | Copy on `/beta`, `/setup`, `/privacy` and the form: Android via a Play testing track (by Google account email). `apk` switches everything back to sideloading |
+| `betaDataRetention` | "Kept until the beta ends…" | Shown on `/privacy#beta-form`. Owner to approve |
 | `supportEmail` | `PUBLIC_SUPPORT_EMAIL` env | Empty → no support link or address anywhere |
 | `siteUrl` / `indexable` | `SIDEKICK_SITE_URL`, `SIDEKICK_INDEXABLE` env | Both required for canonical URLs, `index,follow`, `sitemap.xml` and an allowing `robots.txt` |
 | `pricing` | `null` | Set to generate `/pricing` |
 | `demoVideo` | `null` | Set to an approved recording to enable the demo dialog |
 | `privacyPublicationStatus` | `draft` | Draft banner on `/privacy` |
 
-See `.env.example`. The form endpoint must accept a `multipart/form-data` POST (fields `email`, `mac`,
-`phone_model`, `wish`, plus an empty `website` honeypot to discard if filled) and return a 2xx only when the
-submission was stored; the page shows success only on a 2xx. With JavaScript on, the page sends it with
-`fetch` (same-origin or CORS-enabled endpoint). Without JavaScript the browser posts the form directly, so
-the endpoint should answer that with a redirect or a plain confirmation page.
+See `.env.example`.
+
+**Beta form → Google Sheet.** `integrations/google-sheets/` holds the Apps Script receiver (`Code.gs`) and
+step-by-step setup (`SETUP.md`): requests land in a private sheet, you mark people *Selected*, and a sheet
+menu exports their emails for Google Play Console's tester list. Any other receiver works if it accepts a
+URL-encoded POST (`name`, `email`, `mac`, `phone_model`, `android_version`, `country`, `wish`,
+`consent=yes`, an empty `website` honeypot, and `_js=1` from the script) and replies JSON `{"ok": true}`
+only when the request was stored. The page shows success only on that reply.
 
 ## Content sources
 

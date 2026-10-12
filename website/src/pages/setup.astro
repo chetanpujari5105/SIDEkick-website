@@ -4,6 +4,7 @@ import PageHeader from '../components/PageHeader.astro';
 import DocLayout from '../components/DocLayout.astro';
 import Notice from '../components/Notice.astro';
 import { site } from '../config/site';
+const playTesting = site.androidBetaDistribution === 'google-play-testing';
 const toc = [
   { id: 'before', label: 'Before you start' },
   { id: 'mac', label: 'Install on the Mac' },
@@ -20,7 +21,11 @@ const toc = [
   <PageHeader eyebrow="Setup" title="Install, pair, and choose what to share." lede="About ten minutes, once. These steps match the current beta build; each warning you’ll see is listed in order." />
   <DocLayout toc={toc}>
     <Notice tone="warning" title="This is a test build">
-      <p>Neither app is signed by Apple or listed on Google Play yet, so both systems warn you before opening it. Never turn off Gatekeeper or System Integrity Protection — nothing here needs it.</p>
+      {playTesting ? (
+        <p>The Mac app isn’t notarized by Apple yet, so macOS warns you before opening it. The Android app installs from Google Play once you’ve joined the test. Never turn off Gatekeeper or System Integrity Protection — nothing here needs it.</p>
+      ) : (
+        <p>Neither app is signed by Apple or listed on Google Play yet, so both systems warn you before opening it. Never turn off Gatekeeper or System Integrity Protection — nothing here needs it.</p>
+      )}
     </Notice>
 
     <h2 id="before">Before you start</h2>
@@ -41,11 +46,19 @@ const toc = [
     </ol>
 
     <h2 id="phone">2. Install on the phone</h2>
-    <ol>
-      <li>Open the <code>.apk</code> you were sent.</li>
-      <li>Android asks you to allow that app to <strong>install unknown apps</strong>. Turn it on for that app only, go back, and tap <strong>Install</strong>.</li>
-      <li>If Google Play Protect warns about an unknown developer, read it; install only if the file came from the person who invited you.</li>
-    </ol>
+    {playTesting ? (
+      <ol>
+        <li>On your phone, open the <strong>test opt-in link</strong> from your invitation, signed in with the same Google account you gave when you asked to join.</li>
+        <li>Tap <strong>Become a tester</strong>, then follow the link to Sidekick in the Play Store and tap <strong>Install</strong>. It can take a little while after you’re added before the app appears.</li>
+        <li>Updates during the beta arrive through the Play Store like any other app. To leave the test, use the same opt-in link.</li>
+      </ol>
+    ) : (
+      <ol>
+        <li>Open the <code>.apk</code> you were sent.</li>
+        <li>Android asks you to allow that app to <strong>install unknown apps</strong>. Turn it on for that app only, go back, and tap <strong>Install</strong>.</li>
+        <li>If Google Play Protect warns about an unknown developer, read it; install only if the file came from the person who invited you.</li>
+      </ol>
+    )}
 
     <h2 id="pair">3. Pair</h2>
     <ol>

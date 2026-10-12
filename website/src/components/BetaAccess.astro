@@ -8,6 +8,7 @@ interface Props {
 }
 const { headingLevel = 'h2', showForm = true } = Astro.props;
 const H = headingLevel;
+const playTesting = site.androidBetaDistribution === 'google-play-testing';
 ---
 <section id="beta" class="section section--rule beta" aria-labelledby="beta-title">
   <div class="container beta__grid">
@@ -19,7 +20,12 @@ const H = headingLevel;
       <dl class="beta__facts">
         <div>
           <dt><Icon name="flask-conical" size={18} />Build</dt>
-          <dd>Version {site.currentBuild.version} — {site.currentBuild.status.charAt(0).toLowerCase() + site.currentBuild.status.slice(1)} macOS and Android will both warn you before opening it; the setup guide walks you through each warning.</dd>
+          <dd>
+            Version {site.currentBuild.version} — {site.currentBuild.status.charAt(0).toLowerCase() + site.currentBuild.status.slice(1)}
+            {playTesting
+              ? ' The Android app comes from Google Play once we add your Google account as a tester. The Mac app comes by private link; it isn’t notarized by Apple yet, so macOS warns before opening it and the setup guide walks you through that.'
+              : ' Neither app is signed for public release yet, so macOS and Android both warn you before opening it; the setup guide walks you through each warning.'}
+          </dd>
         </div>
         <div>
           <dt><Icon name="key-round" size={18} />Access</dt>

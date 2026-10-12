@@ -1,3 +1,7 @@
+import { site } from '../config/site';
+
+const playTesting = site.androidBetaDistribution === 'google-play-testing';
+
 export interface Faq {
   q: string;
   /** Plain text; paragraphs separated by blank lines. */
@@ -11,5 +15,10 @@ export const faq: Faq[] = [
   { q: 'Can I reply to WhatsApp messages?', a: 'You can reply to a WhatsApp notification from your Mac when the notification offers a reply — the same reply you could type from the phone’s notification shade. Sidekick isn’t a WhatsApp client: it can’t show your chat history or start new WhatsApp chats.' },
   { q: 'Does call audio play through my Mac?', a: 'No. Sidekick shows incoming calls and lets you answer, decline and dial from the Mac, but the conversation happens on your phone. Android doesn’t let apps like Sidekick carry call audio.' },
   { q: 'How does clipboard sharing work?', a: 'Text you copy on your Mac goes to your phone automatically. From the phone, Android only lets Sidekick read the clipboard while it’s open, so copy with Sidekick open or share the text to Sidekick. Shared text waits on the Mac until you press Copy. Clipboard history is kept in memory only, and cleared when the connection ends.' },
-  { q: 'How do I get beta access?', a: 'The beta is invite-only and small. Request access and, if there’s a place, you’ll get both apps, a setup guide and a personal access token that runs for 45 days from the date it’s issued.' },
+  {
+    q: 'How do I get beta access?',
+    a: playTesting
+      ? 'The beta is invite-only and small. Request access with the Google account you use on your Android phone. If there’s a place, we add that account to the Sidekick test on Google Play and send you the Mac app, a setup guide and a personal access token that runs for 45 days from the date it’s issued.'
+      : 'The beta is invite-only and small. Request access and, if there’s a place, you’ll get both apps, a setup guide and a personal access token that runs for 45 days from the date it’s issued.',
+  },
 ];

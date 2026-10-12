@@ -5,6 +5,7 @@ import DocLayout from '../components/DocLayout.astro';
 import Notice from '../components/Notice.astro';
 import { site } from '../config/site';
 const isDraft = site.privacyPublicationStatus === 'draft';
+const playTesting = site.androidBetaDistribution === 'google-play-testing';
 const toc = [
   { id: 'summary', label: 'In short' },
   { id: 'apps', label: 'The apps' },
@@ -69,11 +70,20 @@ const toc = [
     <p>This site has no analytics, advertising, cookies or third-party embeds, and its fonts and images are served from the site itself. Like any website, the hosting provider receives standard request information — such as IP address, browser and the page requested — and may keep it in access logs. The hosting provider and its log retention will be named here before public launch.</p>
 
     <h2 id="beta-form">Beta requests</h2>
+    <p>The beta request form asks for your name, your Google account email, your Mac type, your Android phone model and version, and — optionally — your country and what you’d most like Sidekick to do. You tick a box to agree before anything is sent.</p>
     {site.betaFormEndpoint ? (
-      <p>The beta form sends your email, Mac type, phone model and optional comment to <code>{new URL(site.betaFormEndpoint).host}</code>. They’re used only to choose and contact testers, and aren’t shared or sold.</p>
+      <p>Your answers are saved to {site.betaFormDestination}. {site.betaFormDestination?.includes('Google Sheets') ? 'Google runs that service and stores the sheet; only the Sidekick team has access to it.' : ''}</p>
     ) : (
-      <p>The beta request form is currently switched off, so it collects nothing. When it opens, this section will name where submissions go and how long they’re kept. It will only ask for your email, Mac type, phone model and an optional comment.</p>
+      <p>The form is currently switched off, so it collects nothing.</p>
     )}
+    <ul>
+      <li><strong>What it’s for:</strong> choosing testers and contacting them about the beta. Nothing is sold or used for advertising.</li>
+      {playTesting && (
+        <li><strong>Google Play:</strong> if you’re selected, your Google account email is added to the tester list of Sidekick’s test on Google Play, which is how Google lets that account install the test app. From then on, Google handles your participation in the test under its own privacy policy.</li>
+      )}
+      <li><strong>How long:</strong> {site.betaDataRetention}</li>
+      <li><strong>Removal:</strong> reply to any beta email, or use the contact in your invitation, and your details are deleted from the sheet{playTesting ? ' and the Google Play tester list' : ''}.</li>
+    </ul>
 
     <h2 id="support">Support messages</h2>
     <p>If you report a problem, your message and anything you attach (such as screenshots or logs) are used to fix it. Logs are designed to contain no message text, clipboard text or phone numbers, but please look through anything before you send it.</p>

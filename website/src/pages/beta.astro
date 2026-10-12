@@ -4,9 +4,14 @@ import PageHeader from '../components/PageHeader.astro';
 import BetaAccess from '../components/BetaAccess.astro';
 import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
+const playTesting = site.androidBetaDistribution === 'google-play-testing';
 const expect = [
-  { icon: 'mail', title: 'An invitation', text: 'If there’s a place, you’ll get both apps, a one-page setup guide, checksums so you can confirm the files, and your personal access token.' },
-  { icon: 'circle-alert', title: 'Warnings on install', text: 'The Mac app isn’t notarized by Apple and the Android app isn’t on Google Play yet, so both systems warn you. The guide covers each step.' },
+  playTesting
+    ? { icon: 'mail', title: 'An invitation', text: 'If there’s a place, we add your Google account email to the Sidekick test on Google Play and email you the opt-in link, the Mac app, a one-page setup guide and your personal access token.' }
+    : { icon: 'mail', title: 'An invitation', text: 'If there’s a place, you’ll get both apps, a one-page setup guide, checksums so you can confirm the files, and your personal access token.' },
+  playTesting
+    ? { icon: 'circle-alert', title: 'One warning on the Mac', text: 'The Mac app isn’t notarized by Apple yet, so macOS warns you before opening it. The guide covers the steps. The Android app installs from the Play Store as normal.' }
+    : { icon: 'circle-alert', title: 'Warnings on install', text: 'The Mac app isn’t notarized by Apple and the Android app isn’t on Google Play yet, so both systems warn you. The guide covers each step.' },
   { icon: 'clock', title: `${site.betaAccessDuration?.days ?? ''} days of access`, text: 'Counted from the start date in your token, normally the day it’s issued. You’ll get a notice a week before and a day before it ends. Renewals are issued by hand.' },
   { icon: 'message-square', title: 'Short, specific reports', text: 'One message per problem: what you did, what you expected, the exact words on screen, the time, and your devices.' },
 ];

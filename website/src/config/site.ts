@@ -18,6 +18,15 @@ export interface DownloadLink {
   sha256?: string;
 }
 
+/**
+ * Paste the Google Apps Script web-app URL here (ends in /exec) to open beta requests.
+ * See integrations/google-sheets/SETUP.md. Leave empty to keep the form closed.
+ * The PUBLIC_BETA_FORM_ENDPOINT environment variable, if set, takes precedence.
+ */
+const BETA_FORM_ENDPOINT = '';
+
+export type AndroidBetaDistribution = 'google-play-testing' | 'apk';
+
 export interface SiteConfig {
   name: string;
   releaseMode: ReleaseMode;
@@ -26,6 +35,12 @@ export interface SiteConfig {
   betaAccessDescription: string;
   supportEmail: string | null;
   betaFormEndpoint: string | null;
+  /** Plain-language name for where form answers go, shown beside the form and on /privacy. */
+  betaFormDestination: string | null;
+  /** How long beta sign-up details are kept. Owner to approve before the form opens. */
+  betaDataRetention: string;
+  /** How Android testers get the app: a Google Play testing track (by Google account email) or a sideloaded APK. */
+  androidBetaDistribution: AndroidBetaDistribution;
   publicDownloadLinks: DownloadLink[];
   /** Null until a commercial model is decided. Renders no pricing route while null. */
   pricing: null | { summary: string; href: string };
@@ -52,7 +67,7 @@ const clean = (v: unknown): string | null => {
  * localhost alone, so the form's real submit paths can be exercised in tests (npm run test:form).
  */
 const endpoint = (() => {
-  const v = clean(env.PUBLIC_BETA_FORM_ENDPOINT);
+  const v = clean(env.PUBLIC_BETA_FORM_ENDPOINT) ?? clean(BETA_FORM_ENDPOINT);
   if (!v) return null;
   try {
     const u = new URL(v);
@@ -63,6 +78,12 @@ const endpoint = (() => {
   }
 })();
 
+const destination = (() => {
+  if (!endpoint) return null;
+  const host = new URL(endpoint).hostname;
+  return host === 'script.google.com' ? 'Sidekick’s private beta sign-up sheet in Google Sheets' : host;
+})();
+
 export const site: SiteConfig = {
   name: 'Sidekick',
   releaseMode: 'invited-beta',
@@ -71,6 +92,10 @@ export const site: SiteConfig = {
     'Each tester receives a signed access token by hand. It runs for 45 days from the start date written in the token — normally the day it is issued, not the day you first open the app — and is checked on your Mac without contacting any server.',
   supportEmail: clean(env.PUBLIC_SUPPORT_EMAIL),
   betaFormEndpoint: endpoint,
+  betaFormDestination: destination,
+  betaDataRetention:
+    'Kept until the beta ends, then deleted. Ask to be removed at any time and your row is deleted.',
+  androidBetaDistribution: 'google-play-testing',
   publicDownloadLinks: [],
   pricing: null,
   siteUrl: clean(env.SIDEKICK_SITE_URL),
@@ -81,7 +106,7 @@ export const site: SiteConfig = {
   currentBuild: {
     version: '2.0.0',
     date: '2026-10-12',
-    status: 'Release candidate for a small invited beta. Not signed by Apple, not on Google Play.',
+    status: 'Release candidate for a small invited beta.',
   },
   minimumRequirements: {
     mac: 'macOS 11 Big Sur or later',

@@ -3,7 +3,8 @@ import PrimaryButton from './PrimaryButton.astro';
 import Icon from './Icon.astro';
 import { site } from '../config/site';
 const endpoint = site.betaFormEndpoint;
-const host = endpoint ? new URL(endpoint).host : null;
+const destination = site.betaFormDestination;
+const playTesting = site.androidBetaDistribution === 'google-play-testing';
 ---
 {!endpoint && (
 <div class="beta-closed" data-beta-closed>
@@ -11,31 +12,33 @@ const host = endpoint ? new URL(endpoint).host : null;
     <Icon name="circle-alert" size={20} />
     <div>
       <p><strong>Requests aren’t open on this page yet.</strong></p>
-      <p>Where beta requests should go hasn’t been approved, so there’s no form here and nothing is collected. If someone running the beta pointed you here, reply to them directly.</p>
+      <p>Where beta requests should go hasn’t been connected, so there’s no form here and nothing is collected. If someone running the beta pointed you here, reply to them directly.</p>
     </div>
   </div>
-  <p class="beta-closed__lead">When requests open, the form will ask for four things — and nothing else:</p>
+  <p class="beta-closed__lead">When requests open, the form will ask for:</p>
   <ol class="beta-closed__list">
-    <li><span>Your email</span><span class="muted">to send the invitation</span></li>
+    <li><span>Your name</span><span class="muted">so we know who we’re inviting</span></li>
+    <li><span>Your Google account email</span><span class="muted">{playTesting ? 'to add you as a tester on Google Play' : 'to send the invitation'}</span></li>
     <li><span>Your Mac type</span><span class="muted">Apple silicon, Intel, or not sure</span></li>
-    <li><span>Your Android phone model</span><span class="muted">so testing covers more makers</span></li>
-    <li><span>What you’d most like Sidekick to do</span><span class="muted">optional</span></li>
+    <li><span>Your Android phone model and version</span><span class="muted">so testing covers more makers</span></li>
+    <li><span>Your country, and what you’d most like Sidekick to do</span><span class="muted">both optional</span></li>
   </ol>
-  <p class="field__hint">No name, no phone number, no account.</p>
+  <p class="field__hint">No phone number, no address, no account.</p>
 </div>
 )}
-{endpoint && host && (
+{endpoint && destination && (
 <form
   class="beta-form"
   method="post"
   action={endpoint}
+  accept-charset="UTF-8"
   novalidate
   data-beta-form
   data-endpoint={endpoint}
   aria-describedby="beta-form-status-note"
 >
   <p class="beta-form__dest" id="beta-form-status-note">
-    Your answers are sent to <span class="mono">{host}</span> and used only to run the beta.{' '}
+    Your answers are saved to {destination} and used only to run the beta.{' '}
     <a class="text-link" href="/privacy#beta-form">How it’s handled</a>
   </p>
 
@@ -43,8 +46,19 @@ const host = endpoint ? new URL(endpoint).host : null;
     <legend class="visually-hidden">Beta access request</legend>
 
     <div class="field">
-      <label for="bf-email">Email</label>
-      <input id="bf-email" name="email" type="email" autocomplete="email" required maxlength="254" aria-describedby="bf-email-err" />
+      <label for="bf-name">Your name</label>
+      <input id="bf-name" name="name" type="text" autocomplete="name" required maxlength="100" aria-describedby="bf-name-err" />
+      <p class="field__err" id="bf-name-err" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="bf-email">Google account email</label>
+      <input id="bf-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" aria-describedby="bf-email-hint bf-email-err" />
+      <p class="field__hint" id="bf-email-hint">
+        {playTesting
+          ? 'The account signed in to the Play Store on your Android phone — Gmail or Google Workspace. Google Play only lets that account install the test version.'
+          : 'We’ll send the invitation here.'}
+      </p>
       <p class="field__err" id="bf-email-err" hidden></p>
     </div>
 
@@ -59,16 +73,45 @@ const host = endpoint ? new URL(endpoint).host : null;
       <p class="field__err" id="bf-mac-err" hidden></p>
     </fieldset>
 
+    <div class="field-row">
+      <div class="field">
+        <label for="bf-phone">Android phone model</label>
+        <input id="bf-phone" name="phone_model" type="text" required maxlength="120" autocomplete="off" placeholder="e.g. Galaxy S24, Pixel 8" aria-describedby="bf-phone-hint bf-phone-err" />
+        <p class="field__hint" id="bf-phone-hint">Settings → About phone.</p>
+        <p class="field__err" id="bf-phone-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="bf-android">Android version</label>
+        <select id="bf-android" name="android_version" required aria-describedby="bf-android-hint bf-android-err">
+          <option value="">Choose…</option>
+          {['16', '15', '14', '13', '12', '11', '10'].map((v) => <option value={v}>Android {v}</option>)}
+          <option value="not-sure">Not sure</option>
+        </select>
+        <p class="field__hint" id="bf-android-hint">Sidekick needs Android 10 or later.</p>
+        <p class="field__err" id="bf-android-err" hidden></p>
+      </div>
+    </div>
+
     <div class="field">
-      <label for="bf-phone">Android phone model</label>
-      <input id="bf-phone" name="phone_model" type="text" required maxlength="120" autocomplete="off" placeholder="e.g. Galaxy S24, Pixel 8, moto g54" aria-describedby="bf-phone-hint bf-phone-err" />
-      <p class="field__hint" id="bf-phone-hint">Settings → About phone shows the model name.</p>
-      <p class="field__err" id="bf-phone-err" hidden></p>
+      <label for="bf-country">Country <span class="field__opt">Optional</span></label>
+      <input id="bf-country" name="country" type="text" autocomplete="country-name" maxlength="60" aria-describedby="bf-country-hint" />
+      <p class="field__hint" id="bf-country-hint">{playTesting ? 'Google Play tests are available country by country.' : 'Helps us plan where testers are.'}</p>
     </div>
 
     <div class="field">
       <label for="bf-wish">What would you most like Sidekick to do? <span class="field__opt">Optional</span></label>
-      <textarea id="bf-wish" name="wish" rows="4" maxlength="1000"></textarea>
+      <textarea id="bf-wish" name="wish" rows="3" maxlength="1000"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="consent" for="bf-consent">
+        <input id="bf-consent" name="consent" type="checkbox" value="yes" required aria-describedby="bf-consent-err" />
+        <span>
+          Save these details in {destination} and use them to contact me about the beta{playTesting ? ' and to add my email to the Google Play test' : ''}.
+          I can ask to be removed at any time. <a class="text-link" href="/privacy#beta-form">Privacy</a>
+        </span>
+      </label>
+      <p class="field__err" id="bf-consent-err" hidden></p>
     </div>
 
     <div class="field field--hp" aria-hidden="true">
@@ -80,7 +123,7 @@ const host = endpoint ? new URL(endpoint).host : null;
       <PrimaryButton type="submit" size="lg" icon="arrow-right" data-submit>
         Request beta access
       </PrimaryButton>
-      <p class="field__hint">We don’t ask for your name, and nothing is shared with anyone else.</p>
+      <p class="field__hint">Nothing is shared with anyone else{playTesting ? ', except your email with Google Play if you’re selected' : ''}.</p>
     </div>
   </fieldset>
 
@@ -94,6 +137,7 @@ const host = endpoint ? new URL(endpoint).host : null;
   if (form && endpoint) {
     const result = form.querySelector<HTMLElement>('[data-result]')!;
     const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const $ = <T extends HTMLElement>(sel: string) => form.querySelector<T>(sel)!;
     const setErr = (id: string, msg: string | null, input?: HTMLElement | null) => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -102,23 +146,32 @@ const host = endpoint ? new URL(endpoint).host : null;
       input?.setAttribute('aria-invalid', msg ? 'true' : 'false');
     };
     const validate = () => {
-      const email = form.querySelector<HTMLInputElement>('#bf-email')!;
-      const phone = form.querySelector<HTMLInputElement>('#bf-phone')!;
-      const mac = form.querySelector<HTMLInputElement>('input[name="mac"]:checked');
       const errors: HTMLElement[] = [];
-      const emailMsg = !email.value.trim()
-        ? 'Enter your email address so we can send the invitation.'
-        : email.validity.typeMismatch
-          ? 'That email address doesn’t look complete — check for a missing @ or domain.'
-          : null;
-      setErr('bf-email-err', emailMsg, email);
-      if (emailMsg) errors.push(email);
-      const macMsg = mac ? null : 'Choose your Mac type, or “Not sure”.';
-      setErr('bf-mac-err', macMsg);
-      if (macMsg) errors.push(form.querySelector<HTMLElement>('input[name="mac"]')!);
-      const phoneMsg = phone.value.trim() ? null : 'Enter your phone’s model — it helps us cover different Android makers.';
-      setErr('bf-phone-err', phoneMsg, phone);
-      if (phoneMsg) errors.push(phone);
+      const check = (id: string, input: HTMLElement, msg: string | null) => {
+        setErr(id, msg, input);
+        if (msg) errors.push(input);
+      };
+      const name = $<HTMLInputElement>('#bf-name');
+      check('bf-name-err', name, name.value.trim() ? null : 'Enter your name.');
+      const email = $<HTMLInputElement>('#bf-email');
+      check(
+        'bf-email-err',
+        email,
+        !email.value.trim()
+          ? 'Enter your Google account email.'
+          : email.validity.typeMismatch
+            ? 'That email address doesn’t look complete — check for a missing @ or domain.'
+            : null,
+      );
+      const mac = form.querySelector<HTMLInputElement>('input[name="mac"]:checked');
+      setErr('bf-mac-err', mac ? null : 'Choose your Mac type, or “Not sure”.');
+      if (!mac) errors.push($('input[name="mac"]'));
+      const phone = $<HTMLInputElement>('#bf-phone');
+      check('bf-phone-err', phone, phone.value.trim() ? null : 'Enter your phone’s model — it helps us cover different Android makers.');
+      const android = $<HTMLSelectElement>('#bf-android');
+      check('bf-android-err', android, android.value ? null : 'Choose your Android version, or “Not sure”.');
+      const consent = $<HTMLInputElement>('#bf-consent');
+      check('bf-consent-err', consent, consent.checked ? null : 'Tick the box so we can store your request.');
       return errors;
     };
     form.addEventListener('submit', async (e) => {
@@ -134,18 +187,23 @@ const host = endpoint ? new URL(endpoint).host : null;
       result.className = 'beta-form__result';
       result.textContent = 'Sending…';
       try {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { Accept: 'application/json' },
-        });
-        if (!res.ok) throw new Error(String(res.status));
+        // URL-encoded body and no custom headers: a "simple" cross-origin request, which a Google
+        // Apps Script web app accepts without a CORS preflight.
+        const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>);
+        body.set('_js', '1');
+        const res = await fetch(endpoint, { method: 'POST', body });
+        // Saved only if the receiver says so: Apps Script answers HTTP 200 even when it fails.
+        const reply = res.ok ? await res.json().catch(() => null) : null;
+        if (!reply || reply.ok !== true) throw new Error(reply?.error ?? String(res.status));
         result.classList.add('is-ok');
-        result.textContent = 'Request received. If there’s a place in the beta, you’ll get an email with both apps and a setup guide.';
+        result.textContent = 'Request received. If there’s a place in the beta, you’ll get an email with what to do next.';
         form.querySelector('fieldset')!.disabled = true;
-      } catch {
+      } catch (err) {
         result.classList.add('is-error');
-        result.textContent = 'Your request didn’t go through, and nothing was saved. Check your connection and try again.';
+        result.textContent =
+          err instanceof Error && err.message === 'invalid'
+            ? 'Some answers weren’t accepted, and nothing was saved. Check each field and try again.'
+            : 'Your request didn’t go through, and nothing was saved. Check your connection and try again.';
         submit.disabled = false;
       } finally {
         submit.removeAttribute('aria-busy');
@@ -262,6 +320,52 @@ const host = endpoint ? new URL(endpoint).host : null;
   }
   .field textarea {
     resize: vertical;
+  }
+  .field input[type='email'],
+  .field input[type='text'],
+  .field select {
+    height: 52px;
+  }
+  .field select {
+    width: 100%;
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line-control);
+    background: var(--surface-well);
+    color: var(--text);
+  }
+  .field select:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+  .field-row {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 560px) {
+    .field-row {
+      grid-template-columns: 3fr 2fr;
+      gap: var(--s-4);
+    }
+  }
+  .field > .consent {
+    font-weight: 400;
+    color: var(--text-body);
+  }
+  .consent {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-3);
+    align-items: start;
+    font-size: var(--fs-sm);
+    color: var(--text-body);
+    cursor: pointer;
+  }
+  .consent input {
+    width: 20px;
+    height: 20px;
+    margin: 0.1em 0 0;
+    accent-color: var(--accent);
   }
   .field input::placeholder,
   .field textarea::placeholder {
