@@ -94,6 +94,31 @@ import PhoneFrame from './PhoneFrame.astro';
       stroke-dashoffset: -14;
     }
   }
+  /* Phones: a deliberate crop instead of a shrunken window. The Mac window renders wider than the
+     screen and is cut at the viewport's left edge, keeping the notification detail and reply legible. */
+  @media (max-width: 639.98px) {
+    .hero-comp__stage {
+      margin-left: calc(var(--gutter) * -1);
+      padding-right: 0;
+      padding-bottom: 34%;
+      overflow: hidden;
+    }
+    .hero-comp__stage :global(.hero-comp__mac) {
+      width: 165%;
+      margin-left: -65%;
+    }
+    .hero-comp__stage :global(.hero-comp__mac .mac__window) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    .hero-comp__stage :global(.hero-comp__phone) {
+      width: 36%;
+      right: 2px;
+    }
+    .hero-comp__link {
+      display: none;
+    }
+  }
   .hero-comp figcaption,
   .hero-comp .illus-label {
     justify-self: start;

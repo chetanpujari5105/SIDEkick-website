@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.form-test-dist/
 .astro/
 .env
 .env.*

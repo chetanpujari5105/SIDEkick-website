@@ -7,6 +7,8 @@ const site = process.env.SIDEKICK_SITE_URL || undefined;
 
 export default defineConfig({
   site,
+  // Lets the form test build into a separate folder without touching dist/.
+  outDir: process.env.SIDEKICK_OUT_DIR || './dist',
   compressHTML: true,
   devToolbar: { enabled: false },
 });

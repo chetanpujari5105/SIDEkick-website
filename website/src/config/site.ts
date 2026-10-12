@@ -47,12 +47,17 @@ const clean = (v: unknown): string | null => {
   return s.length ? s : null;
 };
 
-/** Only an absolute https URL is accepted as a form destination. */
+/**
+ * Only an absolute https URL is accepted as a form destination. Plain http is allowed for
+ * localhost alone, so the form's real submit paths can be exercised in tests (npm run test:form).
+ */
 const endpoint = (() => {
   const v = clean(env.PUBLIC_BETA_FORM_ENDPOINT);
   if (!v) return null;
   try {
-    return new URL(v).protocol === 'https:' ? v : null;
+    const u = new URL(v);
+    const local = u.protocol === 'http:' && (u.hostname === 'localhost' || u.hostname === '127.0.0.1');
+    return u.protocol === 'https:' || local ? v : null;
   } catch {
     return null;
   }

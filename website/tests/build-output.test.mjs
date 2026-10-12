@@ -97,11 +97,14 @@ test('no unsupported claims', () => {
   }
 });
 
-test('beta form is disabled and sends nowhere without an endpoint', () => {
-  const html = read(pages['/beta']);
-  assert.match(html, /<fieldset[^>]*disabled/);
-  assert.ok(!/<form[^>]*action="http/.test(html), 'form has an action');
-  assert.match(html, /Requests aren’t open on this page yet/);
+test('without an endpoint there is no form at all, only an honest closed state', () => {
+  for (const route of ['/', '/beta']) {
+    const html = read(pages[route]);
+    assert.ok(!/<form[\s>]/.test(html), `${route} renders a <form>`);
+    assert.ok(!/<input[\s>]/.test(html), `${route} renders an input`);
+    assert.match(html, /Requests aren’t open on this page yet/);
+    assert.ok(!/Request received/.test(html.replace(/<script[\s\S]*?<\/script>/g, '')), `${route} shows success text`);
+  }
 });
 
 test('privacy page is marked as a draft', () => {

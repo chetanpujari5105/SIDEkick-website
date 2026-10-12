@@ -9,7 +9,7 @@ Status on 2026-10-12: **preview only.** Built and tested locally; not deployed, 
 | B1 | Publisher legal name, postal address, contact, effective date, change-notice method | owner | `/privacy` can't become the effective policy without them (draft banner stays until `privacyPublicationStatus: 'published'`) |
 | B2 | Decide: may phone diagnostic logs move in an Android device-to-device transfer; rewrite or disclose pre-`219cb76` Activity history | owner | Both change a sentence in the privacy text |
 | B3 | Choose a host; name it and its log retention in `/privacy#website` | owner | Website hosting is described generically today |
-| B4 | Approve a beta form destination (HTTPS endpoint returning 2xx only on stored submissions), its retention, and add it to `/privacy#beta-form` | owner | Form is disabled until `PUBLIC_BETA_FORM_ENDPOINT` is set |
+| B4 | Approve a beta form destination (HTTPS endpoint returning 2xx only on stored submissions, CORS for the site's origin, a redirect for no-JS posts), its retention, and add it to `/privacy#beta-form` | owner | No form is rendered until `PUBLIC_BETA_FORM_ENDPOINT` is set; then run `npm run test:form` and one real submission |
 | B5 | Approve a support address (or confirm none) | owner | `/help` currently points testers to their invitation |
 | B6 | Production domain → `SIDEKICK_SITE_URL`, `SIDEKICK_INDEXABLE=true` | owner | Enables canonical, sitemap, indexing |
 | B7 | Owner review of every claim against `docs/content-audit.md` — especially files phone → Mac (defect 137 open), pairing v2 (hardware run partial), clipboard stage D (partial) | owner | No feature is verified on a signed release build yet |
@@ -35,12 +35,13 @@ Status on 2026-10-12: **preview only.** Built and tested locally; not deployed, 
 
 - `npm run check`: 0 errors, 0 warnings.
 - `npm test`: 9/9 static checks pass.
-- `npm run test:browser`: no horizontal overflow on 9 routes × 6 widths (360–1440); axe-core WCAG 2.2 A/AA rules clean on every route at 1440 and 390; keyboard tabs, menu Escape/focus return, no-JS rendering and reduced motion pass.
+- `npm run test:browser`: no horizontal overflow on 9 routes × 6 widths (360–1440); axe-core WCAG 2.2 A/AA rules clean on every route at 1440 and 390; keyboard tabs, menu Escape/focus return, no-JS rendering, blocked images and reduced motion pass.
+- `npm run test:form` (mock receiver on localhost): 21/21 — validation and focus, axe clean with errors showing, 120-character cap and no overflow at 360px with long input, error state on HTTP 500 and on a dropped connection, success only after a 2xx, exactly one submission with the expected fields.
 - Homepage HTML ≈ 21 KB gzipped; no external requests; no client framework.
 
 ## Not performed
 
 - Lighthouse / Core Web Vitals on a real host and network.
 - Manual screen-reader pass (VoiceOver, TalkBack), Safari and Firefox testing, real 200% browser zoom (approximated by the 640/768px widths).
-- Form success/failure against a real endpoint (none configured).
+- A submission to a real endpoint (none approved); only the mock receiver has been tested.
 - Any deployment.

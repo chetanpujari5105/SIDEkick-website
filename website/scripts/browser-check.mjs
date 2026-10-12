@@ -143,6 +143,25 @@ console.log('Without JavaScript');
   await ctx.close();
 }
 
+console.log('Missing media');
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await ctx.route(/\.(png|webp|jpg|jpeg|svg|ico)$/, (r) => r.abort());
+  const page = await ctx.newPage();
+  for (const r of ['/', '/beta']) {
+    await page.goto(BASE + r, { waitUntil: 'load' });
+    const res = await page.evaluate(() => ({
+      over: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      brand: document.querySelector('.brand__word')?.getBoundingClientRect().width ?? 0,
+      altless: [...document.images].filter((i) => !i.hasAttribute('alt')).length,
+    }));
+    res.over <= 0 && res.brand > 0 && res.altless === 0
+      ? pass(`${r}: layout and brand hold with images blocked; every image has alt`)
+      : fail(`${r} missing media: ${JSON.stringify(res)}`);
+  }
+  await ctx.close();
+}
+
 console.log('Reduced motion');
 {
   const ctx = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 1440, height: 900 } });

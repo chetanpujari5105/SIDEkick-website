@@ -37,7 +37,7 @@ const H = headingLevel;
     </div>
     {showForm && (
       <div class="beta__form">
-        <h3 class="beta__form-title">Request access</h3>
+        <h3 class="beta__form-title">{site.betaFormEndpoint ? 'Request access' : 'Requesting access'}</h3>
         <BetaRequestForm />
       </div>
     )}
