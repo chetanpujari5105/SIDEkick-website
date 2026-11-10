@@ -12,7 +12,6 @@ const toc = [
   { id: 'pair', label: 'Pair' },
   { id: 'permissions', label: 'Turn on features' },
   { id: 'mirroring', label: 'Mirroring' },
-  { id: 'token', label: 'Your beta token' },
   { id: 'background', label: 'Staying connected' },
   { id: 'removing', label: 'Removing Sidekick' },
 ];
@@ -33,15 +32,14 @@ const toc = [
       <li>A Mac on {site.minimumRequirements.mac}.</li>
       <li>An Android phone on {site.minimumRequirements.android}.</li>
       <li>Both on the same network — the same Wi-Fi, or the Mac joined to the phone’s hotspot.</li>
-      <li>The files and beta token from your invitation.</li>
+      <li>The Mac app from the <a class="text-link" href="/download">download page</a>, and the Android app from its Google Play test.</li>
     </ul>
 
     <h2 id="mac">1. Install on the Mac</h2>
     <ol>
-      <li>Open the <code>.dmg</code> you were sent — the <em>arm64</em> one for Apple silicon, the other for Intel — and drag <strong>Sidekick</strong> into <strong>Applications</strong>. The Intel build hasn’t been run on an Intel Mac yet; if you have one, please say so in your report.</li>
+      <li>Open the <code>.dmg</code> you downloaded and drag <strong>Sidekick</strong> into <strong>Applications</strong>. The current build is for Apple silicon Macs only.</li>
       <li>Open Sidekick. macOS says it <strong>could not verify</strong> the app. Choose <strong>Done</strong>.</li>
       <li>Open <strong>System Settings → Privacy &amp; Security</strong>, find the message about Sidekick, click <strong>Open Anyway</strong>, enter your password and confirm. You only do this once.</li>
-      <li>Enter your <strong>beta token</strong>: paste it and press <strong>Use this token</strong>, or press <strong>Open token file…</strong>.</li>
       <li>If macOS asks whether Sidekick may <strong>find devices on your local network</strong>, click <strong>Allow</strong> — that’s how it reaches your phone. Sidekick then shows <strong>Scan this with your phone</strong> and a code.</li>
     </ol>
 
@@ -79,14 +77,6 @@ const toc = [
 
     <h2 id="mirroring">Mirroring</h2>
     <p>On the Mac’s Overview, press <strong>Start mirroring</strong> (<kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>M</kbd>). Android asks you to allow screen capture <strong>every time</strong> — that’s Android’s rule. To click and type into the phone, switch on Sidekick’s accessibility service when asked. Banking apps, protected video and the lock screen show as black.</p>
-
-    <h2 id="token">Your beta token</h2>
-    <ul>
-      <li>Access runs until the end date written in your token — {site.betaAccessDuration?.days} days from its start date. <strong>Settings › About › Beta access</strong> shows the date and days left.</li>
-      <li>You’ll see one quiet notice 7 days before the end and one the day before. Reinstalling doesn’t change the date.</li>
-      <li>When it ends, Sidekick shows a screen with a box for a new token. Nothing is deleted: Activity, Settings and received files stay.</li>
-      <li>If Sidekick says your Mac’s date looks earlier than before, check <strong>System Settings › General › Date &amp; Time</strong>.</li>
-    </ul>
 
     <h2 id="background">Staying connected</h2>
     <p>While your Mac is awake and connected, Sidekick keeps the phone ready to answer it, with a visible notification on the phone. When the Mac sleeps or disconnects, that stops. If your phone closes Sidekick in the background, find <strong>Battery</strong> or <strong>Background usage</strong> for Sidekick in the phone’s settings and allow it.</p>

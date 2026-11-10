@@ -69,9 +69,12 @@ test('an un-notarized download says so, and says how to open it', () => {
 
 test('the download page says the download alone is not enough', () => {
   const text = downloadText();
-  assert.match(text, /beta access token/);
-  assert.match(text, /invited Google Play test/);
+  assert.match(text, /You also need the Sidekick Android app/);
+  assert.match(text, /Google Play test and not a public listing/);
   assert.match(text, /Intel Macs aren’t covered/);
+  // 2.0.2 removed the token. The page offering that build must not send anyone looking for one.
+  assert.match(text, /asks for no access token/);
+  assert.ok(!/opens only with a beta access token/.test(text));
 });
 
 test('every download carries its SHA-256 and resolves through a redirect this site declares', () => {
@@ -84,8 +87,13 @@ test('every download carries its SHA-256 and resolves through a redirect this si
     const rule = redirects.find((r) => r.source === href);
     assert.ok(rule, `${href} has no redirect in vercel.json`);
     assert.match(rule.destination, /^https:\/\/github\.com\/[^/]+\/[^/]+\/releases\/download\//);
-    assert.ok(rule.destination.endsWith(href.split('/').pop()), 'the redirect serves the file the link names');
     assert.equal(rule.permanent, false, 'a build link must be repointable');
+  }
+  // The link's path carries no version, so every redirect has to serve the build the site says is
+  // current — including the versioned path an earlier page handed out.
+  const version = read(pages['/']).match(/Build (\d+\.\d+\.\d+) · /)[1];
+  for (const rule of redirects) {
+    assert.ok(rule.destination.endsWith(`/v${version}/Sidekick-${version}-arm64.dmg`), `${rule.source} does not serve ${version}`);
   }
   // No page links to the hosting account directly — the privacy test below depends on it.
   assert.ok(!/github\.com/.test(html));
@@ -93,7 +101,7 @@ test('every download carries its SHA-256 and resolves through a redirect this si
 
 test('a build that is not notarized is labelled a beta wherever the status shows', () => {
   assert.match(read(pages['/']), /brand__status[^>]*>Beta</);
-  assert.match(read(pages['/']).replace(/<[^>]+>/g, ' '), /Beta build — needs an access token/);
+  assert.match(read(pages['/']).replace(/<[^>]+>/g, ' '), /Beta build — not notarized by Apple/);
 });
 
 test('one h1, a title and a description per page', () => {

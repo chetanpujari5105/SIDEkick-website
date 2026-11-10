@@ -54,13 +54,12 @@ const sections = [
     id: 'token',
     label: 'Beta token',
     items: [
-      { q: 'My token was refused', a: ['The message says why: not copied completely, not issued for this build, ended, or not started yet. Copy the whole token or use Open token file….'] },
-      { q: '“This Mac’s date looks earlier”', a: ['Check System Settings › General › Date & Time. Fixing the date clears it.'] },
+      { q: 'Sidekick asks for a beta token', a: ['Only builds before 2.0.2 do. The current Mac build asks for none — install it from the download page and the token screen is gone.'] },
     ],
   },
 ];
 ---
-<BaseLayout title="Help" description="Fixes for common Sidekick issues: connecting, mirroring, clipboard, folders, notifications and beta tokens." path="/help">
+<BaseLayout title="Help" description="Fixes for common Sidekick issues: connecting, mirroring, clipboard, folders, notifications and an older build asking for a token." path="/help">
   <PageHeader eyebrow="Help" title="Common issues, and what to do." lede="Most problems come from one of three places: the network, a permission, or how Android treats background apps." />
   <DocLayout toc={[...sections.map((s) => ({ id: s.id, label: s.label })), { id: 'report', label: 'Reporting a problem' }]}>
     {sections.map((s) => (

@@ -39,7 +39,7 @@ const groups = [
         <p>Android and Mac companion apps that talk to each other directly on your own network.</p>
         <p class="site-footer__build mono">
           Build {site.currentBuild.version} · {site.currentBuild.date}<br />
-          {site.releaseMode === 'invited-beta' ? 'Invited beta — not a public release' : offersUnnotarizedDownload ? 'Beta build — needs an access token' : ''}
+          {site.releaseMode === 'invited-beta' ? 'Invited beta — not a public release' : offersUnnotarizedDownload ? 'Beta build — not notarized by Apple' : ''}
         </p>
       </div>
       {

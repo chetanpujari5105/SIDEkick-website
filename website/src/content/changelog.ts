@@ -4,6 +4,15 @@
  */
 export const changelog = [
   {
+    date: '2026-11-11',
+    title: 'Mac build 2.0.2: no access token',
+    items: [
+      'The Mac app no longer asks for a beta access token. It opens and pairs with nothing to enter.',
+      'Includes the pairing and network reachability fixes listed under 10 November.',
+      'Available from the download page. It isn’t notarized by Apple yet, so macOS warns before opening it; the page shows the steps.',
+    ],
+  },
+  {
     date: '2026-11-10',
     title: 'Mac build 2.0.1: pairing and network reachability fixes',
     items: [

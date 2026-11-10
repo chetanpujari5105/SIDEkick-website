@@ -97,9 +97,9 @@ const destination = (() => {
 
 export const site: SiteConfig = {
   name: 'Sidekick',
-  // 2026-11-11, owner decision: the Mac beta build is offered for download. The app still opens only
-  // with a beta access token, and the Android app is still an invited Google Play test — /download
-  // says both, because a download without them does nothing.
+  // 2026-11-11, owner decision: the Mac beta build is offered for download. From 2.0.2 the Mac app
+  // asks for no access token. The Android app is still a Google Play test — /download says so,
+  // because the Mac half alone does nothing.
   releaseMode: 'public',
   betaAccessDuration: { days: 45 },
   betaAccessDescription:
@@ -111,16 +111,17 @@ export const site: SiteConfig = {
     'Kept until the beta ends, then deleted. Ask to be removed at any time and your row is deleted.',
   androidBetaDistribution: 'google-play-testing',
   // `href` is a path on this site that vercel.json redirects to the release asset, so no page carries
-  // the hosting account's name (tests → "no private data patterns"). The asset:
-  // github.com/…/SIDEkick-website/releases/download/v2.0.1/Sidekick-2.0.1-arm64.dmg
+  // the hosting account's name (tests → "no private data patterns"). The path carries no version, so
+  // a link someone saved keeps giving the current build; the asset it points at today:
+  // github.com/…/SIDEkick-website/releases/download/v2.0.2/Sidekick-2.0.2-arm64.dmg
   publicDownloadLinks: [
     {
       label: 'Download for Mac (Apple silicon)',
       platform: 'Apple silicon',
-      href: '/get/Sidekick-2.0.1-arm64.dmg',
+      href: '/get/Sidekick-arm64.dmg',
       // Ad-hoc signed, not Developer ID signed and not notarized. See allowUnnotarizedDownloads.
       signed: false,
-      sha256: '7da914fad7e46f9c8efad2dc6240d592368e872a48362fc4f7c8bf8ef01212b1',
+      sha256: 'a7de5d28b56be39d92d9d2e55ed1976171772bd6470081649b9690911d4fb5b2',
       size: '122 MB',
     },
   ],
@@ -131,12 +132,12 @@ export const site: SiteConfig = {
   demoVideo: null,
   approvedScreenshots: [],
   privacyPublicationStatus: 'draft',
-  // 2026-11-10: the Mac build 2.0.1 from app commit 3031eee. Apple silicon only, ad-hoc signed and not
-  // notarized. The Android changes in that commit are not in a test build yet.
+  // 2026-11-11: the Mac build 2.0.2 from the app's release/2.0.2 line at c5619bd — no access token,
+  // plus the pairing and reachability fixes. Apple silicon only, ad-hoc signed and not notarized.
   currentBuild: {
-    version: '2.0.1',
-    date: '2026-11-10',
-    status: 'Invited-beta Mac build with pairing and network reachability fixes.',
+    version: '2.0.2',
+    date: '2026-11-11',
+    status: 'Beta Mac build with no access token, and pairing and network reachability fixes.',
   },
   minimumRequirements: {
     mac: 'macOS 11 Big Sur or later',

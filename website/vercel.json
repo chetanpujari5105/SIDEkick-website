@@ -1,8 +1,13 @@
 {
   "redirects": [
     {
+      "source": "/get/Sidekick-arm64.dmg",
+      "destination": "https://github.com/chetanpujari5105/SIDEkick-website/releases/download/v2.0.2/Sidekick-2.0.2-arm64.dmg",
+      "permanent": false
+    },
+    {
       "source": "/get/Sidekick-2.0.1-arm64.dmg",
-      "destination": "https://github.com/chetanpujari5105/SIDEkick-website/releases/download/v2.0.1/Sidekick-2.0.1-arm64.dmg",
+      "destination": "https://github.com/chetanpujari5105/SIDEkick-website/releases/download/v2.0.2/Sidekick-2.0.2-arm64.dmg",
       "permanent": false
     }
   ]
