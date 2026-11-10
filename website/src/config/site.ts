@@ -16,6 +16,8 @@ export interface DownloadLink {
   /** Must be true only for a Developer ID-signed + notarized Mac build or a signed APK. */
   signed: boolean;
   sha256?: string;
+  /** File size, as shown beside the link. */
+  size?: string;
 }
 
 /**
@@ -42,6 +44,15 @@ export interface SiteConfig {
   /** How Android testers get the app: a Google Play testing track (by Google account email) or a sideloaded APK. */
   androidBetaDistribution: AndroidBetaDistribution;
   publicDownloadLinks: DownloadLink[];
+  /**
+   * Lets /download render links whose `signed` is false — a beta build that is not notarized.
+   *
+   * `signed` keeps its meaning and stays false for such a build; this is the separate, deliberate
+   * decision to offer it anyway. While it is true, /download must say the build is not notarized and
+   * show how to open it, and tests/build-output.test.mjs holds it to that. Owner decision, 2026-11-11.
+   * Set it back to false the day every link is notarized.
+   */
+  allowUnnotarizedDownloads: boolean;
   /** Null until a commercial model is decided. Renders no pricing route while null. */
   pricing: null | { summary: string; href: string };
   siteUrl: string | null;
@@ -86,7 +97,10 @@ const destination = (() => {
 
 export const site: SiteConfig = {
   name: 'Sidekick',
-  releaseMode: 'invited-beta',
+  // 2026-11-11, owner decision: the Mac beta build is offered for download. The app still opens only
+  // with a beta access token, and the Android app is still an invited Google Play test — /download
+  // says both, because a download without them does nothing.
+  releaseMode: 'public',
   betaAccessDuration: { days: 45 },
   betaAccessDescription:
     'Each tester receives a signed access token by hand. It runs for 45 days from the start date written in the token — normally the day it is issued, not the day you first open the app — and is checked on your Mac without contacting any server.',
@@ -96,7 +110,21 @@ export const site: SiteConfig = {
   betaDataRetention:
     'Kept until the beta ends, then deleted. Ask to be removed at any time and your row is deleted.',
   androidBetaDistribution: 'google-play-testing',
-  publicDownloadLinks: [],
+  // `href` is a path on this site that vercel.json redirects to the release asset, so no page carries
+  // the hosting account's name (tests → "no private data patterns"). The asset:
+  // github.com/…/SIDEkick-website/releases/download/v2.0.1/Sidekick-2.0.1-arm64.dmg
+  publicDownloadLinks: [
+    {
+      label: 'Download for Mac (Apple silicon)',
+      platform: 'Apple silicon',
+      href: '/get/Sidekick-2.0.1-arm64.dmg',
+      // Ad-hoc signed, not Developer ID signed and not notarized. See allowUnnotarizedDownloads.
+      signed: false,
+      sha256: '7da914fad7e46f9c8efad2dc6240d592368e872a48362fc4f7c8bf8ef01212b1',
+      size: '122 MB',
+    },
+  ],
+  allowUnnotarizedDownloads: true,
   pricing: null,
   siteUrl: clean(env.SIDEKICK_SITE_URL),
   indexable: env.SIDEKICK_INDEXABLE === 'true',
@@ -104,9 +132,7 @@ export const site: SiteConfig = {
   approvedScreenshots: [],
   privacyPublicationStatus: 'draft',
   // 2026-11-10: the Mac build 2.0.1 from app commit 3031eee. Apple silicon only, ad-hoc signed and not
-  // notarized — so it is NOT in publicDownloadLinks, whose `signed` flag it cannot honestly carry, and
-  // it reaches invited testers by hand with its SHA-256, as before. The Android changes in that commit
-  // are not in a test build yet.
+  // notarized. The Android changes in that commit are not in a test build yet.
   currentBuild: {
     version: '2.0.1',
     date: '2026-11-10',
@@ -134,7 +160,12 @@ export const site: SiteConfig = {
 
 export const isPublic = site.releaseMode === 'public';
 export const hasValidDownloads =
-  site.releaseMode === 'public' && site.publicDownloadLinks.length > 0 && site.publicDownloadLinks.every((d) => d.signed);
+  site.releaseMode === 'public' &&
+  site.publicDownloadLinks.length > 0 &&
+  site.publicDownloadLinks.every((d) => d.signed || site.allowUnnotarizedDownloads);
+
+/** True while /download offers at least one build that is not notarized. */
+export const offersUnnotarizedDownload = hasValidDownloads && site.publicDownloadLinks.some((d) => !d.signed);
 
 /** The one primary action, everywhere. */
 export const primaryCta = (() => {
@@ -150,7 +181,15 @@ export const primaryCta = (() => {
   }
 })();
 
+// A downloadable build that is not notarized is still a beta, and the label says so: 'public' with
+// no label would read as a finished release.
 export const statusLabel =
-  site.releaseMode === 'invited-beta' ? 'Invited beta' : site.releaseMode === 'waitlist' ? 'Waitlist' : null;
+  site.releaseMode === 'invited-beta'
+    ? 'Invited beta'
+    : site.releaseMode === 'waitlist'
+      ? 'Waitlist'
+      : offersUnnotarizedDownload
+        ? 'Beta'
+        : null;
 
 export const shouldIndex = site.indexable && site.siteUrl !== null;

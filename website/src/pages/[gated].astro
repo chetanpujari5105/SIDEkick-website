@@ -9,7 +9,8 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import PrimaryButton from '../components/PrimaryButton.astro';
-import { site, hasValidDownloads } from '../config/site';
+import Notice from '../components/Notice.astro';
+import { site, hasValidDownloads, offersUnnotarizedDownload } from '../config/site';
 
 export const getStaticPaths = (() => {
   const paths: { params: { gated: string } }[] = [];
@@ -27,9 +28,39 @@ const { gated } = Astro.params;
       {site.publicDownloadLinks.map((d) => (
         <div>
           <PrimaryButton href={d.href} icon="download">{d.label}</PrimaryButton>
-          <p class="muted">{d.platform}{d.sha256 && <> · SHA-256 <code>{d.sha256}</code></>}</p>
+          <p class="muted">
+            {d.platform} · version {site.currentBuild.version}{d.size && <> · {d.size}</>}
+            {d.sha256 && <><br />SHA-256 <code style="overflow-wrap: anywhere;">{d.sha256}</code></>}
+          </p>
         </div>
       ))}
+      {offersUnnotarizedDownload && (
+        <>
+          <Notice tone="warning" title="This is a beta build, and it’s not notarized by Apple">
+            <p>macOS will warn you before opening it. Never turn off Gatekeeper or System Integrity Protection — nothing here needs it.</p>
+          </Notice>
+          <Notice title="The download alone isn’t enough">
+            <p>
+              Sidekick opens only with a beta access token, which is issued by hand to invited testers. The Android
+              app is an invited Google Play test, not a public listing. Intel Macs aren’t covered by this build.
+              <a class="text-link" href="/beta">How the beta works</a>.
+            </p>
+          </Notice>
+          <section aria-labelledby="open-title" style="max-width: 70ch;">
+            <h2 id="open-title">Opening it the first time</h2>
+            <ol>
+              <li>Open the downloaded file and drag <strong>Sidekick</strong> into <strong>Applications</strong>.</li>
+              <li>Open Sidekick. macOS says it could not verify the app. Click <strong>Done</strong>.</li>
+              <li>Open <strong>System Settings → Privacy &amp; Security</strong>, scroll to the message about Sidekick, and click <strong>Open Anyway</strong>.</li>
+              <li>Enter your Mac password, then click <strong>Open Anyway</strong> in the dialog that follows. You do this once.</li>
+            </ol>
+            <p class="muted">On macOS 14 and earlier you can instead right-click Sidekick in Applications, choose <strong>Open</strong>, then <strong>Open</strong> again. From macOS 15 that shortcut no longer works, so use the steps above.</p>
+            <h2>Check the file first</h2>
+            <p>In Terminal, run <code>shasum -a 256</code> followed by the downloaded file. The result must match the SHA-256 shown under the button. If it doesn’t, don’t open the file.</p>
+            <p>When macOS asks whether Sidekick may find devices on your local network, choose <strong>Allow</strong>. Pairing can’t work without it.</p>
+          </section>
+        </>
+      )}
       <p><a class="text-link" href="/setup">Setup guide</a></p>
     </div>
   </BaseLayout>

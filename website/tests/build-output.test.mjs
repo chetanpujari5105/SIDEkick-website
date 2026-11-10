@@ -33,13 +33,67 @@ test('every route exists', () => {
   for (const f of Object.values(pages)) assert.ok(existsSync(join(dist, f)), f);
 });
 
-test('download and pricing are not generated without configuration', () => {
-  assert.ok(!existsSync(join(dist, 'download')) && !existsSync(join(dist, 'download.html')));
+test('pricing is not generated without configuration', () => {
   assert.ok(!existsSync(join(dist, 'pricing')) && !existsSync(join(dist, 'pricing.html')));
   for (const [p, html] of allHtml()) {
-    assert.ok(!/href="\/download"/.test(html), `${p} links to /download`);
     assert.ok(!/href="\/pricing"/.test(html), `${p} links to /pricing`);
   }
+});
+
+/*
+ * /download, as configured on 2026-11-11: releaseMode 'public' with one Mac build that is NOT
+ * notarized, offered through `allowUnnotarizedDownloads`. These hold the page to what that decision
+ * requires — it says what the build is, what else a person needs, and how to open it.
+ */
+const downloadPage = () => {
+  const f = existsSync(join(dist, 'download/index.html')) ? 'download/index.html' : 'download.html';
+  return read(f);
+};
+const downloadText = () => downloadPage().replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+
+test('the download page exists and the primary action leads to it', () => {
+  assert.ok(existsSync(join(dist, 'download/index.html')) || existsSync(join(dist, 'download.html')));
+  assert.match(read(pages['/']), /href="\/download"/);
+  assert.equal((downloadPage().match(/<h1[\s>]/g) || []).length, 1);
+});
+
+test('an un-notarized download says so, and says how to open it', () => {
+  const text = downloadText();
+  assert.match(text, /not notarized by Apple/);
+  assert.match(text, /Privacy &amp; Security|Privacy & Security/);
+  assert.ok((text.match(/Open Anyway/g) || []).length >= 2, 'both Open Anyway steps');
+  assert.match(text, /Never turn off Gatekeeper/);
+  // The right-click shortcut is offered only for the macOS versions where it still works.
+  assert.match(text, /macOS 14 and earlier[^.]*right-click/);
+});
+
+test('the download page says the download alone is not enough', () => {
+  const text = downloadText();
+  assert.match(text, /beta access token/);
+  assert.match(text, /invited Google Play test/);
+  assert.match(text, /Intel Macs aren’t covered/);
+});
+
+test('every download carries its SHA-256 and resolves through a redirect this site declares', () => {
+  const html = downloadPage();
+  const links = [...html.matchAll(/href="(\/get\/[^"]+)"/g)].map((m) => m[1]);
+  assert.ok(links.length >= 1, 'at least one download link');
+  assert.match(html, /\b[0-9a-f]{64}\b/, 'a SHA-256 is shown');
+  const { redirects } = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+  for (const href of links) {
+    const rule = redirects.find((r) => r.source === href);
+    assert.ok(rule, `${href} has no redirect in vercel.json`);
+    assert.match(rule.destination, /^https:\/\/github\.com\/[^/]+\/[^/]+\/releases\/download\//);
+    assert.ok(rule.destination.endsWith(href.split('/').pop()), 'the redirect serves the file the link names');
+    assert.equal(rule.permanent, false, 'a build link must be repointable');
+  }
+  // No page links to the hosting account directly — the privacy test below depends on it.
+  assert.ok(!/github\.com/.test(html));
+});
+
+test('a build that is not notarized is labelled a beta wherever the status shows', () => {
+  assert.match(read(pages['/']), /brand__status[^>]*>Beta</);
+  assert.match(read(pages['/']).replace(/<[^>]+>/g, ' '), /Beta build — needs an access token/);
 });
 
 test('one h1, a title and a description per page', () => {

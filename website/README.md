@@ -46,7 +46,8 @@ npm run test:form      # builds into .form-test-dist/ with a localhost endpoint,
 | `/help` | Common issues and how to report |
 | `/changelog` | Notable pre-release changes |
 | `/roadmap` | Direction without dates |
-| `/download`, `/pricing` | **Not generated** until configured (`src/pages/[gated].astro`) |
+| `/download` | The Mac beta build, its SHA-256, and how to open a build that isn’t notarized (`src/pages/[gated].astro`) |
+| `/pricing` | **Not generated** until configured |
 
 ## Configuration
 
@@ -54,7 +55,8 @@ Everything that depends on a business decision lives in `src/config/site.ts`:
 
 | Field | Now | Effect |
 |---|---|---|
-| `releaseMode` | `invited-beta` | Primary CTA, status label. `public` + signed `publicDownloadLinks` generates `/download` |
+| `releaseMode` | `public` (2026-11-11) | Primary CTA, status label. `public` + `publicDownloadLinks` generates `/download` — every link `signed`, or `allowUnnotarizedDownloads` |
+| `allowUnnotarizedDownloads` | `true` (2026-11-11) | Offers a beta build that is not notarized. `signed` stays `false` for it; `/download` then states that, shows the Open Anyway steps, and says a beta access token is still needed. Links are `/get/…` paths redirected to the release asset by `vercel.json` |
 | `betaAccessDuration` / `betaAccessDescription` | 45 days, from the token's start date | Shown with its meaning, never as a bare number |
 | `betaFormEndpoint` | `BETA_FORM_ENDPOINT` in `site.ts`, or `PUBLIC_BETA_FORM_ENDPOINT` env (https; plain http only for localhost, for tests) | Your Google Apps Script web-app URL — see `integrations/google-sheets/SETUP.md`. Empty → no form is rendered, only a closed notice listing what it will ask for |
 | `androidBetaDistribution` | `google-play-testing` | Copy on `/beta`, `/setup`, `/privacy` and the form: Android via a Play testing track (by Google account email). `apk` switches everything back to sideloading |
