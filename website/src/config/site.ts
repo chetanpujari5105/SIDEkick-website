@@ -103,10 +103,14 @@ export const site: SiteConfig = {
   demoVideo: null,
   approvedScreenshots: [],
   privacyPublicationStatus: 'draft',
+  // 2026-11-10: the Mac build 2.0.1 from app commit 3031eee. Apple silicon only, ad-hoc signed and not
+  // notarized — so it is NOT in publicDownloadLinks, whose `signed` flag it cannot honestly carry, and
+  // it reaches invited testers by hand with its SHA-256, as before. The Android changes in that commit
+  // are not in a test build yet.
   currentBuild: {
-    version: '2.0.0',
-    date: '2026-10-12',
-    status: 'Release candidate for a small invited beta.',
+    version: '2.0.1',
+    date: '2026-11-10',
+    status: 'Invited-beta Mac build with pairing and network reachability fixes.',
   },
   minimumRequirements: {
     mac: 'macOS 11 Big Sur or later',

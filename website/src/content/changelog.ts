@@ -4,6 +4,18 @@
  */
 export const changelog = [
   {
+    date: '2026-11-10',
+    title: 'Mac build 2.0.1: pairing and network reachability fixes',
+    items: [
+      'A phone address typed on the Mac with its port — the way the phone displays it — now connects. Before, it was read as a name and never tried.',
+      'When the Mac can’t reach the phone, the pairing screen now says which of several things happened and what to do next, instead of only “no answer”.',
+      'The pairing screen points to macOS’s Local Network setting and has a button that opens it. Sidekick can’t read that setting, so it says when a block looks likely rather than claiming to know.',
+      'A phone that is slow to finish the secure connection is given more time before the Mac gives up on it.',
+      'The pairing code names the Mac’s Wi-Fi or Ethernet address rather than a VPN’s.',
+      'Android, in source and not yet in a test build: after 15 seconds with no connection from the Mac, the phone says nothing has reached it and suggests the same Wi-Fi or the phone’s hotspot. The code stays valid.',
+    ],
+  },
+  {
     date: '2026-10-12',
     title: 'Release candidate 2.0.0 for the invited beta',
     items: [
